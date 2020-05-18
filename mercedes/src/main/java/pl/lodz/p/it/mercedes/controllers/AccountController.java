@@ -32,7 +32,6 @@ public class AccountController {
                 .lastName(accountDto.getLastName())
                 .build();
         accountService.addAccount(account);
-        System.out.println(account.toString());
         log.debug(account.toString());
         return account;
     }
