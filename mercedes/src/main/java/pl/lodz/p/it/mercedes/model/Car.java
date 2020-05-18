@@ -17,13 +17,4 @@ public @Data class Car {
     private String id = UUID.randomUUID().toString();
     private String modelName;
     private String engine;
-
-    @Override
-    public String toString() {
-        return "Car{" +
-                "id='" + id + '\'' +
-                ", modelName='" + modelName + '\'' +
-                ", engine='" + engine + '\'' +
-                '}';
-    }
 }

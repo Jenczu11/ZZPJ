@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import pl.lodz.p.it.mercedes.dto.AccountDto;
 import pl.lodz.p.it.mercedes.exceptions.AccountAlreadyExistsException;
@@ -27,7 +24,7 @@ public class AccountController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
-    public Account register(AccountDto accountDto) throws AccountAlreadyExistsException {
+    public Account register(@RequestBody AccountDto accountDto) throws AccountAlreadyExistsException {
         Account account = Account.builder()
                 .username(accountDto.getUsername())
                 .password(accountDto.getPassword())
@@ -35,6 +32,7 @@ public class AccountController {
                 .lastName(accountDto.getLastName())
                 .build();
         accountService.addAccount(account);
+        System.out.println(account.toString());
         log.debug(account.toString());
         return account;
     }

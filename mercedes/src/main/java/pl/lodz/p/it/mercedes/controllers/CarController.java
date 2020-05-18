@@ -15,7 +15,7 @@ public class CarController {
     private final CarService carService;
 
     @PostMapping("/car")
-    public String addCar(@ModelAttribute CarDto carDto) {
+    public String addCar(@RequestBody CarDto carDto) {
         Car car = Car.builder()
                 .modelName(carDto.getModelName())
                 .engine(carDto.getEngine())
