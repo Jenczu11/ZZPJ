@@ -17,15 +17,15 @@ import java.util.List;
 public class CarController {
     private final CarService carService;
 
-    @PostMapping("/car")
-    public Car addCar(@RequestBody CarDto carDto) {
-        Car car = Car.builder()
-                .modelName(carDto.getModelName())
-                .engine(carDto.getEngine())
-                .build();
-        carService.addCar(car);
-        return car;
-    }
+//    @PostMapping("/car")
+//    public Car addCar(@RequestBody CarDto carDto) {
+//        Car car = Car.builder().build();
+////                .model(carDto.getModelName())
+////                .engine(carDto.getEngine())
+////                .build();
+//        carService.addCar(car);
+//        return car;
+//    }
 
     @GetMapping("/car")
     public Car getCar(@RequestParam String modelName) throws CarNotFoundException {
