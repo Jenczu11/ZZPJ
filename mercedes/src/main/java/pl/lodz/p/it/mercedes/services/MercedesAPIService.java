@@ -122,7 +122,8 @@ public class MercedesAPIService {
             try {
                 saveCar(i,apiKey);
             } catch (HttpClientErrorException.TooManyRequests e) {
-               return "To many requests. {"+"Added "+howMany+" vehicles from id " +start+" to "+end+" }";
+                return "To many requests. {" + "Added " + howMany + " vehicles from id " + start + " to " + (end - howMany) + " }";
+
             }
         }
         return "Added "+howMany+" vehicles from id " +start+" to "+end;
