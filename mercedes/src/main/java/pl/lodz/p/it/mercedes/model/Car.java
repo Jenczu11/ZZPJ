@@ -15,6 +15,11 @@ public @Data class Car {
     @Id
     @Builder.Default
     private String id = UUID.randomUUID().toString();
-    private String modelName;
-    private String engine;
+    private String modelId;
+    private String name;
+    private String className;
+    private String bodyName;
+    private Double price;
+    private CarTechnicalInformation carTechnicalInformation;
+    private Map<String,String> imagesUrls;
 }
