@@ -18,9 +18,9 @@ public class CarService {
         carRepository.insert(car);
     }
 
-    public Car getCar(String modelName) throws CarNotFoundException {
-        if (carRepository.findAllByName(modelName).isPresent()) {
-            return carRepository.findAllByName(modelName).get();
+    public Car getCarWithName(String name) throws CarNotFoundException {
+        if (carRepository.findAllByName(name).isPresent()) {
+            return carRepository.findAllByName(name).get();
         } else {
             throw new CarNotFoundException("Car not found.");
         }

@@ -12,14 +12,16 @@ import pl.lodz.p.it.mercedes.model.Car;
 import pl.lodz.p.it.mercedes.model.CarTechnicalInformation;
 import pl.lodz.p.it.mercedes.model.Engine;
 import pl.lodz.p.it.mercedes.model.Transmission;
+import pl.lodz.p.it.mercedes.repositories.CarRepository;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
+
 
 @Service
 @AllArgsConstructor
 public class MercedesAPIService {
+    private final CarRepository carRepository;
     private final RestTemplate restTemplate = new RestTemplate();
     private final String baseURL = "https://api.mercedes-benz.com/configurator/v1";
 //    private final String baseURL = "https://api.mercedes-benz.com/configurator_tryout/v1";
@@ -29,30 +31,94 @@ public class MercedesAPIService {
     public String appendApiKey(String url) {
         return url + "apikey="+apiKey;
     }
-    public Car getModelsForMarket() {
+
+    public Car getCar(int index) {
         String url = baseURL + "/markets/pl_PL/models?";
         url = appendApiKey(url);
+
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
         JSONArray jsonArray = parseResponseEntityArray(response);
-        JSONObject carFromApi = (JSONObject) jsonArray.get(0);
+
+        JSONObject carFromApi = (JSONObject) jsonArray.get(index);
+
         String modelId = carFromApi.get("modelId").toString();
-        String name = carFromApi.get("name").toString();;
+        String name = carFromApi.get("name").toString();
+
         var vehicleBodyWrapper = (JSONObject) carFromApi.get("vehicleBody");
         String bodyName = vehicleBodyWrapper.get("bodyName").toString();;
+
         var vehicleClassWrapper = (JSONObject) carFromApi.get("vehicleClass");
         String className = vehicleClassWrapper.get("className").toString();;
+
         var priceInformationWrapper = (JSONObject) carFromApi.get("priceInformation");
         Long price = (Long) priceInformationWrapper.get("price");
-//        Car car = Car.builder().modelId(modelId).name(name).bodyName(bodyName).className(className).price(price)
 
         var linksWrapper = (JSONObject)carFromApi.get("_links");
         var configurationsLink = linksWrapper.get("configurations").toString();
 
         response = restTemplate.getForEntity(configurationsLink, String.class);
         JSONObject carConfiguration = parseResponseEntity(response);
+        CarTechnicalInformation technical = parseCarTechnicalInformation(carConfiguration);
+
+        var imagesLinksWrapper = (JSONObject) carConfiguration.get("_links");
+        var imagesLinks = imagesLinksWrapper.get("image").toString();
+
+        response = restTemplate.getForEntity(imagesLinks, String.class);
+        JSONObject imagesResponse = parseResponseEntity(response);
+        JSONObject imagesJson = (JSONObject) imagesResponse.get("vehicle");
+        Map<String,String> imagesUrls = new HashMap<String,String>();
+        imagesJson.keySet().forEach(keyStr ->
+        {
+            Object nestedURL = imagesJson.get(keyStr);
+            //for nested objects iteration if required
+            if (nestedURL instanceof JSONObject)
+               ((JSONObject) nestedURL).keySet().forEach(key -> {
+                   Object imageURL = ((JSONObject) nestedURL).get(key);
+                   if(key.toString().equals("url")){
+                       imagesUrls.put(keyStr.toString(),imageURL.toString());
+                   }
+               });
+        });
+        return Car.builder()
+                .modelId(modelId)
+                .name(name)
+                .bodyName(bodyName)
+                .className(className)
+                .price(price)
+                .carTechnicalInformation(technical)
+                .imagesUrls(imagesUrls)
+                .build();
+    }
+    public Car saveCar(int index) {
+        Car car = getCar(index);
+        carRepository.save(car);
+        return car;
+    }
+    private JSONArray parseResponseEntityArray(ResponseEntity<String> response){
+        JSONParser jp = new JSONParser();
+        JSONArray jsonArray = null;
+        try {
+            jsonArray = (JSONArray) jp.parse(response.getBody());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return jsonArray;
+    }
+    private JSONObject parseResponseEntity(ResponseEntity<String> response){
+        JSONParser jp = new JSONParser();
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = (JSONObject) jp.parse(response.getBody());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
+    public CarTechnicalInformation parseCarTechnicalInformation(JSONObject carConfiguration){
 
         JSONObject technicalInformation = (JSONObject) carConfiguration.get("technicalInformation");
-//    Technical information
+        //Technical information
         var accelerationWrapper = (JSONObject) technicalInformation.get("acceleration");
         var acceleration = (Double) accelerationWrapper.get("value");
 
@@ -65,15 +131,29 @@ public class MercedesAPIService {
         var actualMassWrapper = (JSONObject) technicalInformation.get("actualMass");
         var mass = (Long) actualMassWrapper.get("value");
 
-//        Transmission Model
+        Transmission transmission = parseTransmission(technicalInformation);
+
+        Engine engine = parseEngine(technicalInformation);
+
+        return CarTechnicalInformation.builder()
+                .acceleration(acceleration)
+                .topSpeed(topSpeed)
+                .doors(doors)
+                .seats(seats)
+                .mass(mass)
+                .engine(engine)
+                .transmission(transmission).build();
+    }
+    public Transmission parseTransmission(JSONObject technicalInformation) {
         var transmissionWrapper = (JSONObject) technicalInformation.get("transmission");
         var transmissionName = transmissionWrapper.get("name");
         var transmissionType = transmissionWrapper.get("transmissionType");
-        Transmission transmission = Transmission.builder()
+        return Transmission.builder()
                 .name(transmissionName.toString())
                 .type(transmissionType.toString())
                 .build();
-//  Engine
+    }
+    public Engine parseEngine(JSONObject technicalInformation) {
         var engineWrapper =  (JSONObject) technicalInformation.get("engine");
 
         var fuelType = engineWrapper.get("fuelType"); //String
@@ -98,7 +178,7 @@ public class MercedesAPIService {
         var fuelEconomy = (JSONObject) engineWrapper.get("fuelEconomy");
         var fuelConsumptionMinWrapper = (JSONObject) fuelEconomy.get("fuelConsumptionCombinedMin");
         var fuelConsumptionMin = (Double) fuelConsumptionMinWrapper.get("value"); // Double
-        Engine engine = Engine.builder()
+        return Engine.builder()
                 .fuelType(fuelType.toString())
                 .emissionStandard(emissionStandard.toString())
                 .powerHp(powerHp)
@@ -109,80 +189,6 @@ public class MercedesAPIService {
                 .driveType(driveType.toString())
                 .fuelConsumptionMin(fuelConsumptionMin)
                 .build();
-        CarTechnicalInformation technical = CarTechnicalInformation.builder()
-                .acceleration(acceleration)
-                .topSpeed(topSpeed)
-                .doors(doors)
-                .seats(seats)
-                .mass(mass)
-                .engine(engine)
-                .transmission(transmission).build();
+    }
 
-
-        var d = (JSONObject) carConfiguration.get("_links");
-        var e = d.get("image").toString();
-        System.out.println(e);
-        response = restTemplate.getForEntity(e, String.class);
-        JSONObject jsonObject1 = parseResponseEntity(response);
-        var f = (JSONObject) jsonObject1.get("vehicle");
-        Map<String,String> imagesUrls = new HashMap<String,String>();
-        f.keySet().forEach(keyStr ->
-        {
-            Object keyvalue = f.get(keyStr);
-//            System.out.println("key: "+ keyStr + " value: " + keyvalue);
-
-            //for nested objects iteration if required
-            if (keyvalue instanceof JSONObject)
-               ((JSONObject) keyvalue).keySet().forEach(keyStr1 -> {
-                   Object keyvalue1 = ((JSONObject) keyvalue).get(keyStr1);
-                   if(keyStr1.toString().equals("url")){
-                       imagesUrls.put(keyStr.toString(),keyvalue1.toString());
-//                       imagesUrls.add(keyvalue1.toString());
-                   }
-                   System.out.println("key: "+ keyStr1 + " value: " + keyvalue1);
-               });
-        });
-        Car car = Car.builder()
-                .modelId(modelId)
-                .name(name)
-                .bodyName(bodyName)
-                .className(className)
-                .price(price)
-                .carTechnicalInformation(technical)
-                .imagesUrls(imagesUrls)
-                .build();
-        return car;
-    }
-    private JSONArray parseResponseEntityArray(ResponseEntity<String> response){
-        JSONParser jp = new JSONParser();
-        JSONArray jsonArray = null;
-        try {
-            jsonArray = (JSONArray) jp.parse(response.getBody());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return jsonArray;
-    }
-    private JSONObject parseResponseEntity(ResponseEntity<String> response){
-        JSONParser jp = new JSONParser();
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = (JSONObject) jp.parse(response.getBody());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return jsonObject;
-    }
-    public String printJsonObject(JSONObject jsonObj) {
-        AtomicReference<String> s = new AtomicReference<>("");
-        jsonObj.keySet().forEach(keyStr ->
-        {
-            Object keyvalue = jsonObj.get(keyStr);
-            System.out.println("key: "+ keyStr + " value: " + keyvalue);
-            if(keyStr=="url") {
-                s.set(keyvalue.toString());
-            }
-        });
-        return s.toString();
-    }
 }
