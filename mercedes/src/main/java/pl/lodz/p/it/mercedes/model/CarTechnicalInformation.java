@@ -7,10 +7,10 @@ import lombok.Data;
 @Builder
 public class CarTechnicalInformation {
     private Double acceleration;
-    private Long topSpeed;
-    private Long doors;
-    private Long seats;
-    private Long mass;
+    private Double topSpeed;
+    private Double doors;
+    private Double seats;
+    private Double mass;
     private Engine engine;
     private Transmission transmission;
 }

@@ -19,7 +19,7 @@ public @Data class Car {
     private String name;
     private String className;
     private String bodyName;
-    private Long price;
+    private Double price;
     private CarTechnicalInformation carTechnicalInformation;
     private Map<String,String> imagesUrls;
 }

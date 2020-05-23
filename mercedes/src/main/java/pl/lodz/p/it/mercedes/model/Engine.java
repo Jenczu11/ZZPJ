@@ -9,12 +9,12 @@ import org.springframework.boot.autoconfigure.batch.BatchDataSource;
 public class Engine {
     private String fuelType;
     private String emissionStandard;
-    private Long powerHp;
-    private Long powerKw;
+    private Double powerHp;
+    private Double powerKw;
     private String cylinder;
-    private Long cylinderValves;
-    private Long capacity;
+    private Double cylinderValves;
+    private Double capacity;
     private String driveType;
 //   unit l/100km
-    private Double fuelConsumptionMin;
+    private String fuelConsumption;
 }
