@@ -31,9 +31,4 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration {
     public MongoClient mongoClient() {
         return MongoClients.create(Objects.requireNonNull(env.getProperty("CONNECTIONSTRING")));
     }
-
-    @Bean
-    public MongoTransactionManager transactionManager(MongoDbFactory dbFactory) {
-        return new MongoTransactionManager(dbFactory);
-    }
 }

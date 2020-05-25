@@ -22,4 +22,6 @@ public @Data class Car {
     private Double price;
     private CarTechnicalInformation carTechnicalInformation;
     private Map<String,String> imagesUrls;
+    private Double rating;
+
 }

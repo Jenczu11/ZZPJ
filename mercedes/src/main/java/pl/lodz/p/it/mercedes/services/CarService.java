@@ -18,9 +18,9 @@ public class CarService {
         carRepository.insert(car);
     }
 
-    public Car getCarWithName(String name) throws CarNotFoundException {
-        if (carRepository.findAllByName(name).isPresent()) {
-            return carRepository.findAllByName(name).get();
+    public List<Car> getCarWithName(String name) throws CarNotFoundException {
+        if (carRepository.findAllByNameContaining(name).isPresent()) {
+            return carRepository.findAllByNameContaining(name).get();
         } else {
             throw new CarNotFoundException("Car not found.");
         }
@@ -37,4 +37,15 @@ public class CarService {
     public List<Car> getAllCars() {
         return carRepository.findAll();
     }
-}
+
+    public void updateRating(String carId, Double ratingToAdd) throws CarNotFoundException {
+        Car carToUpdateRating = getCarById(carId);
+            if (carToUpdateRating.getRating() == null) {
+                carToUpdateRating.setRating(ratingToAdd);
+            } else if (carToUpdateRating.getRating() == 0.0)
+                carToUpdateRating.setRating(ratingToAdd);
+            else  carToUpdateRating.setRating((carToUpdateRating.getRating()+ratingToAdd) / 2.0 );
+            carRepository.save(carToUpdateRating);
+        }
+    }
+

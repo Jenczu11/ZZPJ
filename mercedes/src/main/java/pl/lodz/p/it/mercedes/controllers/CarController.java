@@ -28,7 +28,7 @@ public class CarController {
 //    }
 
     @GetMapping("/car")
-    public Car getCar(@RequestParam String name) throws CarNotFoundException {
+    public List<Car> getCar(@RequestParam String name) throws CarNotFoundException {
         return carService.getCarWithName(name);
     }
 
