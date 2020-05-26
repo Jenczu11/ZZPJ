@@ -108,6 +108,8 @@ public class MercedesAPIService {
                 .price(price)
                 .carTechnicalInformation(technical)
                 .imagesUrls(imagesUrls)
+                .rating(0.0)
+                .numberOfRatings(0)
                 .build();
     }
     public Car saveCar(int index, String apiKey) {

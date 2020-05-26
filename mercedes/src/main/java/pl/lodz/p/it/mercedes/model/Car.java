@@ -23,5 +23,6 @@ public @Data class Car {
     private CarTechnicalInformation carTechnicalInformation;
     private Map<String,String> imagesUrls;
     private Double rating;
+    private Integer numberOfRatings;
 
 }

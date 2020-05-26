@@ -11,6 +11,7 @@ import pl.lodz.p.it.mercedes.dto.AccountDto;
 import pl.lodz.p.it.mercedes.exceptions.AccountAlreadyExistsException;
 import pl.lodz.p.it.mercedes.exceptions.AccountNotFoundException;
 import pl.lodz.p.it.mercedes.model.Account;
+import pl.lodz.p.it.mercedes.model.mappers.AccountMapper;
 import pl.lodz.p.it.mercedes.services.AccountService;
 
 import java.util.List;
@@ -24,17 +25,10 @@ public class AccountController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
-    public Account register(@RequestBody AccountDto accountDto) throws AccountAlreadyExistsException {
-        Account account = Account.builder()
-                .username(accountDto.getUsername())
-                .password(accountDto.getPassword())
-                .firstName(accountDto.getFirstName())
-                .lastName(accountDto.getLastName())
-                .build();
-        accountService.addAccount(account);
-        log.debug(account.toString());
-        return account;
+    public void register(@RequestBody AccountDto accountDto) throws AccountAlreadyExistsException {
+        accountService.addAccount(AccountMapper.mapFromDto(accountDto));
     }
+
     @GetMapping("/allacounts")
     public List<Account> getAllAccounts() throws AccountNotFoundException {
         return accountService.getAllAccount();

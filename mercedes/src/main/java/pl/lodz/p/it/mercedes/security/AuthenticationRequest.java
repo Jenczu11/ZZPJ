@@ -9,3 +9,4 @@ public @Data class AuthenticationRequest implements Serializable {
     private String username;
     private String password;
 }
+

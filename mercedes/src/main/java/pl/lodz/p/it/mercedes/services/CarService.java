@@ -40,11 +40,20 @@ public class CarService {
 
     public void updateRating(String carId, Double ratingToAdd) throws CarNotFoundException {
         Car carToUpdateRating = getCarById(carId);
+            if (carToUpdateRating.getNumberOfRatings() == null) {
+                carToUpdateRating.setNumberOfRatings(1);
+            } else {
+                carToUpdateRating.setNumberOfRatings(carToUpdateRating.getNumberOfRatings()+1);
+            }
             if (carToUpdateRating.getRating() == null) {
                 carToUpdateRating.setRating(ratingToAdd);
             } else if (carToUpdateRating.getRating() == 0.0)
                 carToUpdateRating.setRating(ratingToAdd);
-            else  carToUpdateRating.setRating((carToUpdateRating.getRating()+ratingToAdd) / 2.0 );
+            else  carToUpdateRating.setRating(
+                    (
+                            (carToUpdateRating.getRating()*(carToUpdateRating.getNumberOfRatings()-1)) +ratingToAdd)
+                            / carToUpdateRating.getNumberOfRatings()
+                );
             carRepository.save(carToUpdateRating);
         }
     }
