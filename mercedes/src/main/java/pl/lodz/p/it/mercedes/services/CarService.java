@@ -38,23 +38,33 @@ public class CarService {
         return carRepository.findAll();
     }
 
-    public void updateRating(String carId, Double ratingToAdd) throws CarNotFoundException {
-        Car carToUpdateRating = getCarById(carId);
-            if (carToUpdateRating.getNumberOfRatings() == null) {
-                carToUpdateRating.setNumberOfRatings(1);
-            } else {
-                carToUpdateRating.setNumberOfRatings(carToUpdateRating.getNumberOfRatings()+1);
-            }
-            if (carToUpdateRating.getRating() == null) {
-                carToUpdateRating.setRating(ratingToAdd);
-            } else if (carToUpdateRating.getRating() == 0.0)
-                carToUpdateRating.setRating(ratingToAdd);
-            else  carToUpdateRating.setRating(
-                    (
-                            (carToUpdateRating.getRating()*(carToUpdateRating.getNumberOfRatings()-1)) +ratingToAdd)
-                            / carToUpdateRating.getNumberOfRatings()
-                );
-            carRepository.save(carToUpdateRating);
+    public Car deleteCar(String id) throws CarNotFoundException {
+        if (carRepository.findById(id).isPresent()) {
+            Car carToDelete = carRepository.findById(id).get();
+            carRepository.delete(carToDelete);
+            return carToDelete;
+        } else {
+            throw new CarNotFoundException("Car not found.");
         }
     }
+
+    public void updateRating(String carId, Double ratingToAdd) throws CarNotFoundException {
+        Car carToUpdateRating = getCarById(carId);
+        if (carToUpdateRating.getNumberOfRatings() == null) {
+            carToUpdateRating.setNumberOfRatings(1);
+        } else {
+            carToUpdateRating.setNumberOfRatings(carToUpdateRating.getNumberOfRatings()+1);
+        }
+        if (carToUpdateRating.getRating() == null) {
+            carToUpdateRating.setRating(ratingToAdd);
+        } else if (carToUpdateRating.getRating() == 0.0)
+            carToUpdateRating.setRating(ratingToAdd);
+        else  carToUpdateRating.setRating(
+                (
+                        (carToUpdateRating.getRating()*(carToUpdateRating.getNumberOfRatings()-1)) +ratingToAdd)
+                        / carToUpdateRating.getNumberOfRatings()
+            );
+        carRepository.save(carToUpdateRating);
+    }
+}
 

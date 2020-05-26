@@ -38,6 +38,12 @@ public class CarController {
         return carService.getCarById(id);
     }
 
+    @DeleteMapping("/car/{id}")
+    @ResponseBody
+    public Car deleteCar(@PathVariable String id) throws CarNotFoundException {
+        return carService.deleteCar(id);
+    }
+
     @GetMapping("/cars")
     public List<Car> getAllCars() {
         return carService.getAllCars();
