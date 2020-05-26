@@ -6,10 +6,13 @@ import pl.lodz.p.it.mercedes.model.Engine;
 
 @Data
 @Builder
-public class Diesel extends Engine {
+public class Super extends Engine {
     private Double powerHp;
     private Double powerKw;
     private String cylinder;
     private Double cylinderValves;
     private Double capacity;
+
+    @Builder.Default
+    private FuelConsumptionUnit fuelConsumptionUnit = FuelConsumptionUnit.l_100km;
 }
