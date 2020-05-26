@@ -20,6 +20,8 @@ import pl.lodz.p.it.mercedes.model.Car;
 import pl.lodz.p.it.mercedes.model.CarTechnicalInformation;
 import pl.lodz.p.it.mercedes.model.Engine;
 import pl.lodz.p.it.mercedes.model.Transmission;
+import pl.lodz.p.it.mercedes.model.engines.Diesel;
+import pl.lodz.p.it.mercedes.model.engines.EngineFactory;
 import pl.lodz.p.it.mercedes.repositories.CarRepository;
 
 import java.util.HashMap;
@@ -224,18 +226,29 @@ public class MercedesAPIService {
         var fuelConsumptionMinWrapper = (JSONObject) fuelEconomy.get("fuelConsumptionCombinedMin");
         var fuelConsumptionMin = parseNumber(fuelConsumptionMinWrapper.get("value")); // Double
         var fuelConsumptionMinUnit = fuelConsumptionMinWrapper.get("unit");
-        String fuelConsumption = fuelConsumptionMin.toString() + " " + fuelConsumptionMinUnit;
-        return Engine.builder()
-                .fuelType(fuelType.toString())
-                .emissionStandard(emissionStandard.toString())
-                .powerHp(powerHp)
-                .powerKw(powerKw)
-                .cylinder(cylinder)
-                .cylinderValves(cylinderValves)
-                .capacity(capacity)
-                .driveType(driveType.toString())
-                .fuelConsumption(fuelConsumption)
-                .build();
+        String fuelConsumption = fuelConsumptionMin.toString();
+//        return Engine.builder()
+//                        .fuelType(fuelType.toString())
+//                        .emissionStandard(emissionStandard.toString())
+//                        .powerHp(powerHp)
+//                        .powerKw(powerKw)
+//                        .cylinder(cylinder)
+//                        .cylinderValves(cylinderValves)
+//                        .capacity(capacity)
+//                        .driveType(driveType.toString())
+//                .fuelConsumption(fuelConsumption)
+//                .build();
+
+        return EngineFactory.getEngine(
+                fuelType.toString(),
+                emissionStandard.toString(),
+                driveType.toString(),
+                fuelConsumption,
+                powerHp,
+                powerKw,
+                cylinder,
+                cylinderValves,
+                capacity);
     }
     public Double parseNumber(Object object){
             return Double.parseDouble(object.toString());

@@ -1,7 +1,9 @@
 package pl.lodz.p.it.mercedes.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,6 +13,8 @@ import java.util.UUID;
 
 @Document(collection = "Cars")
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public @Data class Car {
     @Id
     @Builder.Default
