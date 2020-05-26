@@ -6,6 +6,7 @@ import pl.lodz.p.it.mercedes.exceptions.AccountNotFoundException;
 import pl.lodz.p.it.mercedes.exceptions.CarNotFoundException;
 import pl.lodz.p.it.mercedes.model.Account;
 import pl.lodz.p.it.mercedes.model.Car;
+import pl.lodz.p.it.mercedes.model.Review;
 import pl.lodz.p.it.mercedes.repositories.CarRepository;
 
 import java.util.List;
@@ -48,7 +49,7 @@ public class CarService {
         }
     }
 
-    public void updateRating(String carId, Double ratingToAdd) throws CarNotFoundException {
+    public void updateRating(String carId, Review review, Double ratingToAdd) throws CarNotFoundException {
         Car carToUpdateRating = getCarById(carId);
         if (carToUpdateRating.getNumberOfRatings() == null) {
             carToUpdateRating.setNumberOfRatings(1);
@@ -64,6 +65,7 @@ public class CarService {
                         (carToUpdateRating.getRating()*(carToUpdateRating.getNumberOfRatings()-1)) +ratingToAdd)
                         / carToUpdateRating.getNumberOfRatings()
             );
+        carToUpdateRating.getReviewList().add(review);
         carRepository.save(carToUpdateRating);
     }
 }

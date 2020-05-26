@@ -28,7 +28,7 @@ public class ReviewController {
                 .overallRating(overallRating)
                 .build();
         reviewService.addReview(review);
-        carService.updateRating(reviewDto.getCarId(),overallRating);
+        carService.updateRating(reviewDto.getCarId(),review,overallRating);
         return review;
     }
 

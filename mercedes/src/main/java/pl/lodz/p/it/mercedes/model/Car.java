@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Document(collection = "Cars")
 @Builder
@@ -26,6 +24,7 @@ public @Data class Car {
     private Double price;
     private CarTechnicalInformation carTechnicalInformation;
     private Map<String,String> imagesUrls;
+    private ArrayList<Review> reviewList = new ArrayList<>();
     private Double rating;
     private Integer numberOfRatings;
 
