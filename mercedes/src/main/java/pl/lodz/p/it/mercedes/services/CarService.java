@@ -62,7 +62,7 @@ public class CarService {
             carToUpdateRating.setRating(ratingToAdd);
         else  carToUpdateRating.setRating(
                 (
-                        (carToUpdateRating.getRating()*(carToUpdateRating.getNumberOfRatings()-1)) +ratingToAdd)
+                        (carToUpdateRating.getRating() * (carToUpdateRating.getNumberOfRatings() - 1)) + ratingToAdd)
                         / carToUpdateRating.getNumberOfRatings()
             );
         carToUpdateRating.getReviewList().add(review);
