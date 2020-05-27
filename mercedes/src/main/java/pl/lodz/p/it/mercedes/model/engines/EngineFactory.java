@@ -7,7 +7,7 @@ public class EngineFactory {
          if(fuelType == null) {
             return null;
          }
-         if(fuelType.equalsIgnoreCase("diesel")){
+         if(fuelType.equalsIgnoreCase("diesel")) {
              return Diesel.builder()
                         .emissionStandard(emissionStandard)
                         .powerHp(powerHp)
@@ -19,7 +19,7 @@ public class EngineFactory {
                 .fuelConsumption(fuelConsumption)
                 .build();
          }
-        if(fuelType.equalsIgnoreCase("super")){
+        if(fuelType.equalsIgnoreCase("super")) {
             return Super.builder()
                     .fuelType(fuelType)
                     .emissionStandard(emissionStandard)
@@ -32,7 +32,7 @@ public class EngineFactory {
                     .fuelConsumption(fuelConsumption)
                     .build();
         }
-        if(fuelType.equalsIgnoreCase("superplus")){
+        if(fuelType.equalsIgnoreCase("superplus")) {
             return SuperPlus.builder()
                     .fuelType(fuelType)
                     .emissionStandard(emissionStandard)
@@ -45,13 +45,13 @@ public class EngineFactory {
                     .fuelConsumption(fuelConsumption)
                     .build();
         }
-        if(fuelType.equalsIgnoreCase("electric")){
+        if(fuelType.equalsIgnoreCase("electric")) {
             return Electric.builder()
                     .fuelType(fuelType)
                     .emissionStandard(emissionStandard)
                     .fuelConsumption(fuelConsumption)
                     .build();
         }
-         return null;
-}
+        return null;
+    }
 }
