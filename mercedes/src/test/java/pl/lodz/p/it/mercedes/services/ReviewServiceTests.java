@@ -37,11 +37,10 @@ public class ReviewServiceTests {
     @Autowired
     private ReviewRepository repository;
     private ReviewService reviewService;
-    private List<Review> reviews;
 
     @BeforeEach
     void prepare() {
-        reviews = new ArrayList<>();
+        List<Review> reviews = new ArrayList<>();
 
         reviews.add(Review.builder().id("1").carId("car1").performance(1).userId("Micheal").visualAspect(2).valueForMoney(1).build());
         reviews.add(Review.builder().carId("car2").performance(2).userId("Stephen").visualAspect(4).valueForMoney(3).build());
