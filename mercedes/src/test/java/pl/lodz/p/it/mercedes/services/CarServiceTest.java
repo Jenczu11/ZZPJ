@@ -2,6 +2,7 @@ package pl.lodz.p.it.mercedes.services;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -81,9 +82,21 @@ class CarServiceTest {
     @ValueSource(strings = {"car 1","car 2","car 3"})
     void getCarWithName(String carName) throws CarNotFoundException {
         assertEquals(carService.getCarWithName(carName).size(),1);
-
     }
 
+    @ParameterizedTest
+    @DisplayName("Throw carNotFound on wrong car name")
+    @ValueSource(strings = {"you won't find this car"})
+    void givenNonExistCar_throwCarNotFoundException(String carName) throws CarNotFoundException {
+        Exception exception = assertThrows(CarNotFoundException.class, () -> {
+            carService.getCarWithName(carName);
+        });
+
+        String expectedMessage = "Car not found";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
     @Test
     void getCarById() {
     }
