@@ -1,5 +1,4 @@
-package pl.lodz.p.it.mercedes;
-
+package pl.lodz.p.it.mercedes.services;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +10,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import pl.lodz.p.it.mercedes.TestMongoConfiguration;
+import pl.lodz.p.it.mercedes.TestSuiteExtension;
 import pl.lodz.p.it.mercedes.model.Review;
 import pl.lodz.p.it.mercedes.repositories.ReviewRepository;
 import pl.lodz.p.it.mercedes.services.ReviewService;
@@ -21,6 +22,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.mock;
@@ -30,7 +33,7 @@ import static org.mockito.Mockito.when;
 @Import(TestMongoConfiguration.class)
 @ExtendWith(TestSuiteExtension.class)
 
-public class ReviewTests {
+public class ReviewServiceTests {
     @Autowired
     private ReviewRepository repository;
     private ReviewService reviewService;
@@ -39,7 +42,6 @@ public class ReviewTests {
     @BeforeEach
     void prepare() {
         reviews = new ArrayList<>();
-//        repository = mock(ReviewRepository.class);
 
         reviews.add(Review.builder().id("1").carId("car1").performance(1).userId("Micheal").visualAspect(2).valueForMoney(1).build());
         reviews.add(Review.builder().carId("car2").performance(2).userId("Stephen").visualAspect(4).valueForMoney(3).build());
@@ -52,6 +54,22 @@ public class ReviewTests {
     @AfterEach
     void clean() {
         repository.deleteAll();
+    }
+    @Test
+    @DisplayName("Review builder should return UUID when build default")
+    void reviewBuilderWithUUID() {
+        Review review = Review.builder().build();
+        System.out.println(review.getId());
+        assertNotNull(review.getId());
+    }
+
+    @Test
+    @DisplayName("Review builder should return Id when build with that id")
+    void reviewBuilderWithId() {
+        String id = "1";
+        Review review = Review.builder().id("1").build();
+        System.out.println(review.getId());
+        assertEquals(review.getId(),id);
     }
 
     @Test
