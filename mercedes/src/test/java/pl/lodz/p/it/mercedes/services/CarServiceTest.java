@@ -75,18 +75,23 @@ class CarServiceTest {
     }
 
     @Test
+    @DisplayName("Add car to repository.")
     void addCar() {
+        Car car = Car.builder().build();
+        carService.addCar(car);
+        assertEquals(carService.getAllCars().size(),5);
     }
 
-
-    @ParameterizedTest
+    @DisplayName("Get car with name")
+    @ParameterizedTest(name = "Car name = {0}")
     @ValueSource(strings = {"car 1","car 2","car 3"})
     void getCarWithName(String carName) throws CarNotFoundException {
         assertEquals(carService.getCarWithName(carName).size(),1);
     }
 
-    @ParameterizedTest
+
     @DisplayName("Throw carNotFound on wrong car name")
+    @ParameterizedTest(name = "carName = {0}")
     @ValueSource(strings = {"you won't find this car"})
     void givenNonExistCar_throwCarNotFoundException(String carName) throws CarNotFoundException {
         Exception exception = assertThrows(CarNotFoundException.class, () -> {
@@ -109,15 +114,22 @@ class CarServiceTest {
     }
 
     @Test
+    @DisplayName("Get all cars")
     void getAllCars() {
         assertEquals(carService.getAllCars().size(),4);
     }
 
-    @Test
-    void deleteCar() {
+
+    @DisplayName("Delete car")
+    @ParameterizedTest(name = "Car id to delete {0}")
+    @ValueSource(strings = {"1"})
+    void deleteCar(String id) throws CarNotFoundException {
+        carService.deleteCar(id);
+        assertEquals(carService.getAllCars().size(),3);
     }
 
     @Test
+    @DisplayName("Update rating")
     void updateRating() {
     }
 }
