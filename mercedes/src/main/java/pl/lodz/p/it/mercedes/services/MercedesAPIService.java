@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.apache.coyote.Response;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -32,6 +34,8 @@ import java.util.Objects;
 @Service
 @AllArgsConstructor
 public class MercedesAPIService {
+    Logger logger = LoggerFactory.getLogger(MercedesAPIService.class);
+
     private final CarRepository carRepository;
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -39,15 +43,15 @@ public class MercedesAPIService {
     private final String apiKey = "null";
 
     public String appendApiKey(String url, String apiKey) {
-        if(Objects.equals(apiKey, "null")) {
-            return url + "apikey="+ this.apiKey;
+        if (Objects.equals(apiKey, "null")) {
+            return url + "apikey=" + this.apiKey;
         }
-       return url + "apikey="+ apiKey;
+        return url + "apikey=" + apiKey;
     }
 
     public Car getCar(int index, String apiKey) {
         String url = baseURL + "/markets/pl_PL/models?";
-        url = appendApiKey(url,apiKey);
+        url = appendApiKey(url, apiKey);
 
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
@@ -59,15 +63,15 @@ public class MercedesAPIService {
         String name = carFromApi.get("name").toString();
 
         var vehicleBodyWrapper = (JSONObject) carFromApi.get("vehicleBody");
-        String bodyName = vehicleBodyWrapper.get("bodyName").toString();;
+        String bodyName = vehicleBodyWrapper.get("bodyName").toString();
 
         var vehicleClassWrapper = (JSONObject) carFromApi.get("vehicleClass");
-        String className = vehicleClassWrapper.get("className").toString();;
+        String className = vehicleClassWrapper.get("className").toString();
 
         var priceInformationWrapper = (JSONObject) carFromApi.get("priceInformation");
         Double price = parseNumber(priceInformationWrapper.get("price"));
 
-        var linksWrapper = (JSONObject)carFromApi.get("_links");
+        var linksWrapper = (JSONObject) carFromApi.get("_links");
         var configurationsLink = linksWrapper.get("configurations").toString();
 
         response = restTemplate.getForEntity(configurationsLink, String.class);
@@ -77,10 +81,10 @@ public class MercedesAPIService {
         var imagesLinksWrapper = (JSONObject) carConfiguration.get("_links");
         var imagesLinks = imagesLinksWrapper.get("image").toString();
 
-        Map<String,String> imagesUrls = new HashMap<String,String>();
-        String linkToImages = imagesLinks.replaceAll("(apikey.*)","");
+        Map<String, String> imagesUrls = new HashMap<String, String>();
+        String linkToImages = imagesLinks.replaceAll("(apikey.*)", "");
 //        String linkToImages = imagesLinks;
-        imagesUrls.put("base",linkToImages);
+        imagesUrls.put("base", linkToImages);
 
         try {
             ResponseEntity<String> imageRes = restTemplate.getForEntity(imagesLinks, String.class);
@@ -89,17 +93,18 @@ public class MercedesAPIService {
             imagesJson.keySet().forEach(keyStr ->
             {
                 Object nestedURL = imagesJson.get(keyStr);
-                //for nested objects iteration if required
+
+                // For nested objects iteration if required.
                 if (nestedURL instanceof JSONObject)
                     ((JSONObject) nestedURL).keySet().forEach(key -> {
                         Object imageURL = ((JSONObject) nestedURL).get(key);
-                        if(key.toString().equals("url")){
-                            imagesUrls.put(keyStr.toString(),imageURL.toString());
+                        if (key.toString().equals("url")) {
+                            imagesUrls.put(keyStr.toString(), imageURL.toString());
                         }
                     });
             });
-        } catch (HttpServerErrorException e ) {
-            e.getStatusCode();
+        } catch (HttpServerErrorException e) {
+            logger.error("Error when getting images from api for car " + name + ". " + e);
         }
 
         return Car.builder()
@@ -114,49 +119,57 @@ public class MercedesAPIService {
                 .numberOfRatings(0)
                 .build();
     }
+
     public Car saveCar(int index, String apiKey) {
-        Car car = getCar(index,apiKey);
+        Car car = getCar(index, apiKey);
         carRepository.save(car);
         return car;
     }
+
     public String populateDB(int start, int end, String apiKey) {
         int i;
-        int howMany=0;
-        for (i = start; i<end; i++,howMany++) {
+        int howMany = 0;
+        for (i = start; i < end; i++, howMany++) {
             try {
-                saveCar(i,apiKey);
+                saveCar(i, apiKey);
             } catch (HttpClientErrorException.TooManyRequests e) {
-                return "To many requests. {" + "Added " + howMany + " vehicles from id " + start + " to " + (end - howMany) + " }";
-
+                String message = "To many requests. {" + "Added " + howMany + " vehicles from id " + start + " to " + (end - howMany) + " } ";
+                logger.error(message + e);
+                return message;
             }
         }
-        return "Added "+howMany+" vehicles from id " +start+" to "+end;
+        String message = "Added " + howMany + " vehicles from id " + start + " to " + end + ".";
+        logger.info(message);
+        return message;
     }
 
-    private JSONArray parseResponseEntityArray(ResponseEntity<String> response){
+    private JSONArray parseResponseEntityArray(ResponseEntity<String> response) {
         JSONParser jp = new JSONParser();
         JSONArray jsonArray = null;
         try {
             jsonArray = (JSONArray) jp.parse(response.getBody());
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error("Error when parsing response entity. " + e);
         }
         return jsonArray;
     }
-    private JSONObject parseResponseEntity(ResponseEntity<String> response){
+
+    private JSONObject parseResponseEntity(ResponseEntity<String> response) {
         JSONParser jp = new JSONParser();
         JSONObject jsonObject = null;
         try {
             jsonObject = (JSONObject) jp.parse(response.getBody());
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error("Error when parsing response entity. " + e);
         }
         return jsonObject;
     }
-    public CarTechnicalInformation parseCarTechnicalInformation(JSONObject carConfiguration){
+
+    public CarTechnicalInformation parseCarTechnicalInformation(JSONObject carConfiguration) {
 
         JSONObject technicalInformation = (JSONObject) carConfiguration.get("technicalInformation");
-        //Technical information
+
+        // Technical information.
         var accelerationWrapper = (JSONObject) technicalInformation.get("acceleration");
         var acceleration = parseNumber(accelerationWrapper.get("value"));
 
@@ -182,6 +195,7 @@ public class MercedesAPIService {
                 .engine(engine)
                 .transmission(transmission).build();
     }
+
     public Transmission parseTransmission(JSONObject technicalInformation) {
         var transmissionWrapper = (JSONObject) technicalInformation.get("transmission");
         var transmissionName = transmissionWrapper.get("name");
@@ -191,58 +205,47 @@ public class MercedesAPIService {
                 .type(transmissionType.toString())
                 .build();
     }
+
     public Engine parseEngine(JSONObject technicalInformation) {
-        var engineWrapper =  (JSONObject) technicalInformation.get("engine");
+        var engineWrapper = (JSONObject) technicalInformation.get("engine");
 
-        var fuelType = engineWrapper.get("fuelType"); //String
-        var emissionStandard = engineWrapper.get("emissionStandard"); //String
+        String fuelType = (String) engineWrapper.get("fuelType");
+        String emissionStandard = (String) engineWrapper.get("emissionStandard");
 
-        var powerHpWrapper = (JSONObject) engineWrapper.get("powerHp");
-        var powerHp = parseNumber( powerHpWrapper.get("value")); // Long
+        JSONObject powerHpWrapper = (JSONObject) engineWrapper.get("powerHp");
+        Double powerHp = parseNumber(powerHpWrapper.get("value"));
 
-        var powerKwWrapper = (JSONObject) engineWrapper.get("powerKw");
-        var powerKw = parseNumber(powerKwWrapper.get("value")); // Long
+        JSONObject powerKwWrapper = (JSONObject) engineWrapper.get("powerKw");
+        Double powerKw = parseNumber(powerKwWrapper.get("value"));
 
         String cylinder = "---";
         try {
-            cylinder = engineWrapper.get("cylinder").toString(); //String
+            cylinder = engineWrapper.get("cylinder").toString();
         } catch (Exception e) {
-//            e.printStackTrace();
+            logger.error("Error when parsing cylinder from api. " + e);
         }
 
-        var cylinderValvesWrapper = (JSONObject) engineWrapper.get("cylinderValves");
+        JSONObject cylinderValvesWrapper = (JSONObject) engineWrapper.get("cylinderValves");
         Double cylinderValves = 0.0;
         try {
-            cylinderValves = parseNumber(cylinderValvesWrapper.get("value")); //Long
+            cylinderValves = parseNumber(cylinderValvesWrapper.get("value"));
         } catch (Exception e) {
-//            e.printStackTrace();
+            logger.error("Error when parsing cylinder values from api. " + e);
         }
-        var capacityWrapper = (JSONObject) engineWrapper.get("capacity");
-        var capacity = parseNumber(capacityWrapper.get("value")); //Long
+        JSONObject capacityWrapper = (JSONObject) engineWrapper.get("capacity");
+        Double capacity = parseNumber(capacityWrapper.get("value"));
 
-        var driveType = engineWrapper.get("typeOfPropulsion"); //string
+        String driveType = (String) engineWrapper.get("typeOfPropulsion");
 
-        var fuelEconomy = (JSONObject) engineWrapper.get("fuelEconomy");
-        var fuelConsumptionMinWrapper = (JSONObject) fuelEconomy.get("fuelConsumptionCombinedMin");
-        var fuelConsumptionMin = parseNumber(fuelConsumptionMinWrapper.get("value")); // Double
-        var fuelConsumptionMinUnit = fuelConsumptionMinWrapper.get("unit");
+        JSONObject fuelEconomy = (JSONObject) engineWrapper.get("fuelEconomy");
+        JSONObject fuelConsumptionMinWrapper = (JSONObject) fuelEconomy.get("fuelConsumptionCombinedMin");
+        Double fuelConsumptionMin = parseNumber(fuelConsumptionMinWrapper.get("value"));
         String fuelConsumption = fuelConsumptionMin.toString();
-//        return Engine.builder()
-//                        .fuelType(fuelType.toString())
-//                        .emissionStandard(emissionStandard.toString())
-//                        .powerHp(powerHp)
-//                        .powerKw(powerKw)
-//                        .cylinder(cylinder)
-//                        .cylinderValves(cylinderValves)
-//                        .capacity(capacity)
-//                        .driveType(driveType.toString())
-//                .fuelConsumption(fuelConsumption)
-//                .build();
 
         return EngineFactory.getEngine(
-                fuelType.toString(),
-                emissionStandard.toString(),
-                driveType.toString(),
+                fuelType,
+                emissionStandard,
+                driveType,
                 fuelConsumption,
                 powerHp,
                 powerKw,
@@ -250,7 +253,8 @@ public class MercedesAPIService {
                 cylinderValves,
                 capacity);
     }
-    public Double parseNumber(Object object){
-            return Double.parseDouble(object.toString());
+
+    public Double parseNumber(Object object) {
+        return Double.parseDouble(object.toString());
     }
 }
