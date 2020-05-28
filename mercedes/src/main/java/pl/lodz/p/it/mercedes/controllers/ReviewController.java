@@ -42,6 +42,11 @@ public class ReviewController {
     public Review getReviewById (@PathVariable String id) throws Exception {
         return reviewService.getReviewById(id);
     }
+    @DeleteMapping("/review/{id}")
+    @ResponseBody
+    public Review deleteReviewById (@PathVariable String id) throws Exception {
+        return reviewService.deleteReviewById(id);
+    }
     @GetMapping("/review/car/{carId}")
     @ResponseBody
     public List<Review> getReviewByCarId (@PathVariable String carId) throws Exception {

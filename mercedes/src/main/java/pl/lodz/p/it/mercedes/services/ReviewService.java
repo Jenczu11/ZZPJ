@@ -40,4 +40,13 @@ public class ReviewService {
     public List<Review> getAllReviews() {
         return reviewRepository.findAll();
     }
+    public Review deleteReviewById(String id) throws Exception {
+        if (reviewRepository.findById(id).isPresent()) {
+             Review reviewToDelete = reviewRepository.findById(id).get();
+             reviewRepository.delete(reviewToDelete);
+             return reviewToDelete;
+        } else {
+            throw new Exception("Review to delete not found.");
+        }
+    }
 }

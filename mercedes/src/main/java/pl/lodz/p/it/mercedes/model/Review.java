@@ -14,6 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Document("reviews")
 public class Review {
+    @Builder.Default
     private String id = UUID.randomUUID().toString();
     private String carId;
     private String userId;

@@ -1,6 +1,7 @@
 package pl.lodz.p.it.mercedes.services;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -30,12 +31,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-
+@Slf4j
 @Service
 @AllArgsConstructor
 public class MercedesAPIService {
-    Logger logger = LoggerFactory.getLogger(MercedesAPIService.class);
-
+    
     private final CarRepository carRepository;
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -104,7 +104,7 @@ public class MercedesAPIService {
                     });
             });
         } catch (HttpServerErrorException e) {
-            logger.error("Error when getting images from api for car " + name + ". " + e);
+            log.error("Error when getting images from api for car " + name + ". " + e);
         }
 
         return Car.builder()
@@ -134,12 +134,12 @@ public class MercedesAPIService {
                 saveCar(i, apiKey);
             } catch (HttpClientErrorException.TooManyRequests e) {
                 String message = "To many requests. {" + "Added " + howMany + " vehicles from id " + start + " to " + (end - howMany) + " } ";
-                logger.error(message + e);
+                log.error(message + e);
                 return message;
             }
         }
         String message = "Added " + howMany + " vehicles from id " + start + " to " + end + ".";
-        logger.info(message);
+        log.info(message);
         return message;
     }
 
@@ -149,7 +149,7 @@ public class MercedesAPIService {
         try {
             jsonArray = (JSONArray) jp.parse(response.getBody());
         } catch (ParseException e) {
-            logger.error("Error when parsing response entity. " + e);
+            log.error("Error when parsing response entity. " + e);
         }
         return jsonArray;
     }
@@ -160,7 +160,7 @@ public class MercedesAPIService {
         try {
             jsonObject = (JSONObject) jp.parse(response.getBody());
         } catch (ParseException e) {
-            logger.error("Error when parsing response entity. " + e);
+            log.error("Error when parsing response entity. " + e);
         }
         return jsonObject;
     }
@@ -222,7 +222,7 @@ public class MercedesAPIService {
         try {
             cylinder = engineWrapper.get("cylinder").toString();
         } catch (Exception e) {
-            logger.error("Error when parsing cylinder from api. " + e);
+            log.error("Error when parsing cylinder from api. " + e);
         }
 
         JSONObject cylinderValvesWrapper = (JSONObject) engineWrapper.get("cylinderValves");
@@ -230,7 +230,7 @@ public class MercedesAPIService {
         try {
             cylinderValves = parseNumber(cylinderValvesWrapper.get("value"));
         } catch (Exception e) {
-            logger.error("Error when parsing cylinder values from api. " + e);
+            log.error("Error when parsing cylinder values from api. " + e);
         }
         JSONObject capacityWrapper = (JSONObject) engineWrapper.get("capacity");
         Double capacity = parseNumber(capacityWrapper.get("value"));
