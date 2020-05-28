@@ -1,7 +1,9 @@
 package pl.lodz.p.it.mercedes.model.engines;
 
+import lombok.Builder;
 import pl.lodz.p.it.mercedes.model.Engine;
 
+@Builder
 public class EngineFactory {
     public static Engine getEngine(String fuelType, String emissionStandard, String driveType, String fuelConsumption, Double powerHp, Double powerKw, String cylinder, Double cylinderValves, Double capacity) {
          if(fuelType == null) {
