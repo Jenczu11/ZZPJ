@@ -8,18 +8,32 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.UUID;
 
-@Data
 @Builder
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
 @Document("reviews")
 public class Review {
+
     @Builder.Default
-    private String id = UUID.randomUUID().toString();
+    private String id = UUID.randomUUID().toString();;
     private String carId;
     private String userId;
-    private Integer valueForMoney;
-    private Integer performance;
-    private Integer visualAspect;
+    @Builder.Default
+    private Integer valueForMoney = 0;
+    @Builder.Default
+    private Integer performance = 0;
+    @Builder.Default
+    private Integer visualAspect = 0;
     private Double overallRating;
+
+    public Review(String id, String carId, String userId, Integer valueForMoney, Integer performance, Integer visualAspect, Double overallRating) {
+        this.id = id;
+        this.carId = carId;
+        this.userId = userId;
+        this.valueForMoney = valueForMoney;
+        this.performance = performance;
+        this.visualAspect = visualAspect;
+        this.overallRating = (valueForMoney+performance+visualAspect) / 3.0;
+    }
+
 }

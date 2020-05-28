@@ -21,7 +21,11 @@ public class CarService {
 
     public List<Car> getCarWithName(String name) throws CarNotFoundException {
         if (carRepository.findAllByNameContaining(name).isPresent()) {
-            return carRepository.findAllByNameContaining(name).get();
+            List<Car> cars = carRepository.findAllByNameContaining(name).get();
+            if (cars.size() == 0) {
+                throw new CarNotFoundException("Car not found.");
+            }
+            return cars;
         } else {
             throw new CarNotFoundException("Car not found.");
         }
@@ -49,7 +53,7 @@ public class CarService {
         }
     }
 
-    public void updateRating(String carId, Review review, Double ratingToAdd) throws CarNotFoundException {
+    public void updateRating(String carId, Review review) throws CarNotFoundException {
         Car carToUpdateRating = getCarById(carId);
         if (carToUpdateRating.getNumberOfRatings() == null) {
             carToUpdateRating.setNumberOfRatings(1);
@@ -57,12 +61,12 @@ public class CarService {
             carToUpdateRating.setNumberOfRatings(carToUpdateRating.getNumberOfRatings()+1);
         }
         if (carToUpdateRating.getRating() == null) {
-            carToUpdateRating.setRating(ratingToAdd);
+            carToUpdateRating.setRating(review.getOverallRating());
         } else if (carToUpdateRating.getRating() == 0.0)
-            carToUpdateRating.setRating(ratingToAdd);
+            carToUpdateRating.setRating(review.getOverallRating());
         else  carToUpdateRating.setRating(
                 (
-                        (carToUpdateRating.getRating() * (carToUpdateRating.getNumberOfRatings() - 1)) + ratingToAdd)
+                        (carToUpdateRating.getRating() * (carToUpdateRating.getNumberOfRatings() - 1)) + review.getOverallRating())
                         / carToUpdateRating.getNumberOfRatings()
             );
         carToUpdateRating.getReviewList().add(review);

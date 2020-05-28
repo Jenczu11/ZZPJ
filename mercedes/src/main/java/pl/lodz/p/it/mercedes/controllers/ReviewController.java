@@ -18,17 +18,17 @@ public class ReviewController {
     private final CarService carService;
     @PostMapping("/review")
     public Review addReview(@RequestBody ReviewDto reviewDto) throws CarNotFoundException {
-        Double overallRating = ((reviewDto.getValueForMoney()+reviewDto.getPerformance()+reviewDto.getVisualAspect()) / 3.0);
+//        Double overallRating = ((reviewDto.getValueForMoney()+reviewDto.getPerformance()+reviewDto.getVisualAspect()) / 3.0);
         Review review = Review.builder()
                 .carId(reviewDto.getCarId())
                 .userId(reviewDto.getUserId())
                 .valueForMoney(reviewDto.getValueForMoney())
                 .performance(reviewDto.getPerformance())
                 .visualAspect(reviewDto.getVisualAspect())
-                .overallRating(overallRating)
+//                .overallRating(overallRating)
                 .build();
         reviewService.addReview(review);
-        carService.updateRating(reviewDto.getCarId(),review,overallRating);
+        carService.updateRating(reviewDto.getCarId(),review);
         return review;
     }
 

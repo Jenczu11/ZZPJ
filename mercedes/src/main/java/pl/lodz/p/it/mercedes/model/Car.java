@@ -24,8 +24,11 @@ public @Data class Car {
     private Double price;
     private CarTechnicalInformation carTechnicalInformation;
     private Map<String,String> imagesUrls;
+    @Builder.Default
     private ArrayList<Review> reviewList = new ArrayList<>();
-    private Double rating;
-    private Integer numberOfRatings;
+    @Builder.Default
+    private Double rating = 0.0;
+    @Builder.Default
+    private Integer numberOfRatings = 0;
 
 }
