@@ -53,6 +53,7 @@ class CarServiceTest {
                     .engine(engine).transmission(transmission).build();
 
             Car car = Car.builder()
+                    .id(id)
                     .modelId(id)
                     .name(String.format("car %d",i))
                     .className(String.format("klasa %d",i))
@@ -97,8 +98,14 @@ class CarServiceTest {
 
         assertTrue(actualMessage.contains(expectedMessage));
     }
-    @Test
-    void getCarById() {
+
+    @DisplayName("Get car by id")
+    @ParameterizedTest(name = "Car ID = {0}")
+    @ValueSource(strings = {"1","2","3"})
+    void getCarById(String id) throws CarNotFoundException {
+        List<Car> cars = new ArrayList<>();
+        cars.add(carService.getCarById(id));
+        assertEquals(cars.size(),1);
     }
 
     @Test
