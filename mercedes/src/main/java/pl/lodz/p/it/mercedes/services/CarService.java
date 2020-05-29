@@ -1,17 +1,13 @@
 package pl.lodz.p.it.mercedes.services;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import org.springframework.stereotype.Service;
-import pl.lodz.p.it.mercedes.exceptions.AccountNotFoundException;
 import pl.lodz.p.it.mercedes.exceptions.CarNotFoundException;
-import pl.lodz.p.it.mercedes.model.Account;
 import pl.lodz.p.it.mercedes.model.Car;
 import pl.lodz.p.it.mercedes.model.Review;
 import pl.lodz.p.it.mercedes.repositories.CarRepository;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -78,21 +74,36 @@ public class CarService {
         car.setReviewList(reviewsForCar);
         carRepository.save(car);
     }
-    public void calculateAverageRatings(String carId) throws CarNotFoundException {
+    public Car calculateAverageRatings(String carId) throws CarNotFoundException {
+
         Car car = getCarById(carId);
+        calculateAverageRatingsHelper(car);
+        carRepository.save(car);
+        return car;
+    }
+
+    public Car calculateAverageRatings(Car car) throws CarNotFoundException {
+
+        calculateAverageRatingsHelper(car);
+        carRepository.save(car);
+        return car;
+    }
+
+    private Car calculateAverageRatingsHelper(Car car) {
         Double rating = 0.0;
         Double valueForMoneyAverage = 0.0;
         Double performanceAverage = 0.0;
         Double visualAspectAverage = 0.0;
         Integer numberOfRatings = 0;
         List<Review> reviewsForCar = car.getReviewList();
-        for(Review review : reviewsForCar) {
+        for (Review review : reviewsForCar) {
             performanceAverage += review.getPerformance();
             valueForMoneyAverage += review.getValueForMoney();
             visualAspectAverage += review.getVisualAspect();
             rating += review.getOverallRating();
             numberOfRatings++;
-        };
+        }
+        ;
 
         performanceAverage /= numberOfRatings;
         valueForMoneyAverage /= numberOfRatings;
@@ -104,9 +115,9 @@ public class CarService {
         car.setVisualAspectAverage(visualAspectAverage);
         car.setRating(rating);
         car.setNumberOfRatings(numberOfRatings);
-
-        carRepository.save(car);
+        return car;
     }
+
 
     public List<Car> getTop10_OverallRating() {
         List<Car> cars = this.getAllCars();

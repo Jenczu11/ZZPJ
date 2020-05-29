@@ -152,8 +152,8 @@ class LogicTest {
 
         assertEquals(reviewService.getReviewByCarId(carId).size(), 1);
 
-        if(reviewService.checkReviewForDate(review2)){
-            if(!reviewService.checkIfReviewForCarNotExists(review2)) {
+        if (reviewService.checkReviewForDate(review2)) {
+            if (!reviewService.checkIfReviewForCarNotExists(review2)) {
                 reviewService.addReview(review2);
                 carService.updateReviewInCar(review2.getCarId(), review2);
                 carService.calculateAverageRatings(review2.getCarId());

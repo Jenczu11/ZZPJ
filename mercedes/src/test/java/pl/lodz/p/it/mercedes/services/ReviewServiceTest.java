@@ -55,6 +55,7 @@ public class ReviewServiceTest {
     void clean() {
         repository.deleteAll();
     }
+
     @Test
     @DisplayName("Review builder should return UUID when build default")
     void reviewBuilderWithUUID() {
@@ -69,7 +70,7 @@ public class ReviewServiceTest {
         String id = "1";
         Review review = Review.builder().id("1").build();
         System.out.println(review.getId());
-        assertEquals(review.getId(),id);
+        assertEquals(review.getId(), id);
     }
 
     @Test
@@ -132,9 +133,6 @@ public class ReviewServiceTest {
 
         assertThat(returnedReviewsList.size()).isEqualTo(2);
     }
-
-
-
 
 
 }

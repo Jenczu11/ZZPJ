@@ -31,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Import(TestMongoConfiguration.class)
 @ExtendWith(TestSuiteExtension.class)
-
 class Top10Test {
     @Autowired
     private CarRepository repository;
@@ -50,18 +49,18 @@ class Top10Test {
     }
 
     private void AddCarsWithWorseRatings(List<Car> cars) {
-        IntStream.range(0,8).forEach(i -> {
+        IntStream.range(0, 8).forEach(i -> {
             String id = Integer.toString(i);
             var performanceAverage = ThreadLocalRandom.current().nextDouble(0, 2 + 1);
             var visualAspectAverage = ThreadLocalRandom.current().nextDouble(0, 2 + 1);
             var valueForMoneyAverage = ThreadLocalRandom.current().nextDouble(0, 2 + 1);
-            var rating = (performanceAverage+visualAspectAverage+valueForMoneyAverage) / 3.0;
+            var rating = (performanceAverage + visualAspectAverage + valueForMoneyAverage) / 3.0;
             Car car = Car.builder()
                     .id(id)
                     .modelId(id)
-                    .name(String.format("car %d",i))
-                    .className(String.format("klasa %d",i))
-                    .bodyName(String.format("body %d",i))
+                    .name(String.format("car %d", i))
+                    .className(String.format("klasa %d", i))
+                    .bodyName(String.format("body %d", i))
                     .performanceAverage(performanceAverage)
                     .valueForMoneyAverage(visualAspectAverage)
                     .visualAspectAverage(valueForMoneyAverage)
@@ -73,12 +72,12 @@ class Top10Test {
     }
 
     private void AddCarWithTopRatings(List<Car> cars) {
-        IntStream.range(1,4).forEach(i -> {
+        IntStream.range(1, 4).forEach(i -> {
             var rating = (double) 6 - i;
             Car car = Car.builder()
-                    .id(String.format("topcar%d",i))
-                    .modelId(String.format("topcar%d",i))
-                    .name(String.format("topcar%d",i))
+                    .id(String.format("topcar%d", i))
+                    .modelId(String.format("topcar%d", i))
+                    .name(String.format("topcar%d", i))
                     .performanceAverage(rating)
                     .valueForMoneyAverage(rating)
                     .visualAspectAverage(rating)
@@ -122,7 +121,6 @@ class Top10Test {
     }
 
 
-
     @Test
     @DisplayName("Check cars sorted by average visual rating")
     void getTop10_VisualAspect() {
@@ -132,7 +130,6 @@ class Top10Test {
 
         checkTopOfCarList(cars);
     }
-
 
 
     @Test
