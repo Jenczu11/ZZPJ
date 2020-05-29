@@ -9,6 +9,7 @@ import pl.lodz.p.it.mercedes.model.Review;
 import pl.lodz.p.it.mercedes.services.CarService;
 import pl.lodz.p.it.mercedes.services.ReviewService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -26,7 +27,9 @@ public class ReviewController {
                 .performance(reviewDto.getPerformance())
                 .visualAspect(reviewDto.getVisualAspect())
 //                .overallRating(overallRating)
+                .reviewCreation(LocalDateTime.now())
                 .build();
+
         reviewService.addReview(review);
         carService.updateRating(reviewDto.getCarId(),review);
         return review;
