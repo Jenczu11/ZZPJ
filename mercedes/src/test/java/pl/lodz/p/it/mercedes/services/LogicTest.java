@@ -109,7 +109,8 @@ class LogicTest {
     }
 
 
-    @DisplayName("(Logic) User can change the rating for a given car after 24h from the previous rating")
+    @DisplayName("(Logic) User can change the rating for a given car after 24h from the previous rating" +
+            " and One user can send only one rating to this one car")
     @ParameterizedTest
     @ValueSource(strings = {"1"})
     public void AddReviewAfter24h(String carId) throws Exception {
@@ -150,6 +151,7 @@ class LogicTest {
         assertEquals(ReviewList.get(0).getVisualAspect(), 3);
 
         assertEquals(reviewService.getReviewByCarId(carId).size(), 1);
+
         if(reviewService.checkReviewForDate(review2)){
             if(!reviewService.checkIfReviewForCarNotExists(review2)) {
                 reviewService.addReview(review2);
@@ -171,58 +173,58 @@ class LogicTest {
     }
 
 
-    @DisplayName("One user can send only one rating to this one car")
-    @ParameterizedTest
-    @ValueSource(strings = {"1"})
-    void checkIfReviewForCarExists(String carId) throws Exception {
-
-        String userId = "userid1";
-        String firstReviewId = "1";
-        String secondReviewId = "2";
-//      Build first review
-        Review.ReviewBuilder builder = Review.builder();
-        builder.id(firstReviewId);
-        builder.carId(carId);
-        builder.userId(userId);
-        builder.performance(1);
-        builder.valueForMoney(2);
-        builder.visualAspect(3);
-        builder.reviewCreation(LocalDateTime.parse("2020-05-29T10:50:00.000"));
-        Review review1 = builder.build();
-//      Build second review
-        builder.id(secondReviewId);
-        builder.carId(carId);
-        builder.userId(userId);
-        builder.performance(5);
-        builder.valueForMoney(5);
-        builder.visualAspect(5);
-        builder.reviewCreation(LocalDateTime.parse("2020-05-30T10:50:01.000"));
-        Review review2 = builder.build();
-
-// Add first review (like in Review controller)
-        reviewService.addReview(review1);
-        carService.addReviewToCar(review1.getCarId(), review1);
-        carService.calculateAverageRatings(review1.getCarId());
-//        Check if car has only first review
-        assertEquals(carService.getCarById(carId).getReviewList().size(), 1);
-//        Check if db holds only first review
-        assertEquals(reviewService.getReviewByCarId(carId).size(), 1);
-
-// Add second review (like in Review controller)
-        if(reviewService.checkReviewForDate(review2)){
-            if(!reviewService.checkIfReviewForCarNotExists(review2)) {
-                reviewService.addReview(review2);
-                carService.updateReviewInCar(review2.getCarId(), review2);
-                carService.calculateAverageRatings(review2.getCarId());
-            }
-        }
-//        Check if car has only second review data
-        assertEquals(carService.getCarById(carId).getReviewList().size(), 1);
-
-//    Check if db holds both reviews for this carID
-        assertEquals(reviewService.getReviewByCarId(carId).size(), 2);
-//    Check if db holds both reviews for this userID
-        assertEquals(reviewService.getReviewByUserId(userId).size(), 2);
-    }
+//    @DisplayName("One user can send only one rating to this one car")
+//    @ParameterizedTest
+//    @ValueSource(strings = {"1"})
+//    void checkIfReviewForCarExists(String carId) throws Exception {
+//
+//        String userId = "userid1";
+//        String firstReviewId = "1";
+//        String secondReviewId = "2";
+////      Build first review
+//        Review.ReviewBuilder builder = Review.builder();
+//        builder.id(firstReviewId);
+//        builder.carId(carId);
+//        builder.userId(userId);
+//        builder.performance(1);
+//        builder.valueForMoney(2);
+//        builder.visualAspect(3);
+//        builder.reviewCreation(LocalDateTime.parse("2020-05-29T10:50:00.000"));
+//        Review review1 = builder.build();
+////      Build second review
+//        builder.id(secondReviewId);
+//        builder.carId(carId);
+//        builder.userId(userId);
+//        builder.performance(5);
+//        builder.valueForMoney(5);
+//        builder.visualAspect(5);
+//        builder.reviewCreation(LocalDateTime.parse("2020-05-30T10:50:01.000"));
+//        Review review2 = builder.build();
+//
+//// Add first review (like in Review controller)
+//        reviewService.addReview(review1);
+//        carService.addReviewToCar(review1.getCarId(), review1);
+//        carService.calculateAverageRatings(review1.getCarId());
+////        Check if car has only first review
+//        assertEquals(carService.getCarById(carId).getReviewList().size(), 1);
+////        Check if db holds only first review
+//        assertEquals(reviewService.getReviewByCarId(carId).size(), 1);
+//
+//// Add second review (like in Review controller)
+//        if(reviewService.checkReviewForDate(review2)){
+//            if(!reviewService.checkIfReviewForCarNotExists(review2)) {
+//                reviewService.addReview(review2);
+//                carService.updateReviewInCar(review2.getCarId(), review2);
+//                carService.calculateAverageRatings(review2.getCarId());
+//            }
+//        }
+////        Check if car has only second review data
+//        assertEquals(carService.getCarById(carId).getReviewList().size(), 1);
+//
+////    Check if db holds both reviews for this carID
+//        assertEquals(reviewService.getReviewByCarId(carId).size(), 2);
+////    Check if db holds both reviews for this userID
+//        assertEquals(reviewService.getReviewByUserId(userId).size(), 2);
+//    }
 
 }
