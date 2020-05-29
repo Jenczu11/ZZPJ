@@ -1,6 +1,7 @@
 package pl.lodz.p.it.mercedes.services;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.mercedes.exceptions.AccountNotFoundException;
 import pl.lodz.p.it.mercedes.exceptions.CarNotFoundException;
@@ -9,6 +10,7 @@ import pl.lodz.p.it.mercedes.model.Car;
 import pl.lodz.p.it.mercedes.model.Review;
 import pl.lodz.p.it.mercedes.repositories.CarRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -53,24 +55,55 @@ public class CarService {
         }
     }
 
-    public void updateRating(String carId, Review review) throws CarNotFoundException {
-        Car carToUpdateRating = getCarById(carId);
-        if (carToUpdateRating.getNumberOfRatings() == null) {
-            carToUpdateRating.setNumberOfRatings(1);
-        } else {
-            carToUpdateRating.setNumberOfRatings(carToUpdateRating.getNumberOfRatings()+1);
-        }
-        if (carToUpdateRating.getRating() == null) {
-            carToUpdateRating.setRating(review.getOverallRating());
-        } else if (carToUpdateRating.getRating() == 0.0)
-            carToUpdateRating.setRating(review.getOverallRating());
-        else  carToUpdateRating.setRating(
-                (
-                        (carToUpdateRating.getRating() * (carToUpdateRating.getNumberOfRatings() - 1)) + review.getOverallRating())
-                        / carToUpdateRating.getNumberOfRatings()
-            );
-        carToUpdateRating.getReviewList().add(review);
-        carRepository.save(carToUpdateRating);
+    public void addReviewToCar(String carId, Review review) throws CarNotFoundException {
+        Car car = getCarById(carId);
+        car.getReviewList().add(review);
+        carRepository.save(car);
+    }
+    public void updateReviewInCar(String carId, Review reviewToUpdate) throws CarNotFoundException {
+        Car car = getCarById(carId);
+//        TODO: Logika updatujaca review a nie insertujaca.
+        ArrayList<Review> reviewsForCar = car.getReviewList();
+        for(Review review : reviewsForCar) {
+            if(review.getCarId().equals(reviewToUpdate.getCarId())){
+                if(review.getUserId().equals(reviewToUpdate.getUserId())) {
+                    reviewsForCar.remove(review);
+                    reviewsForCar.add(reviewToUpdate);
+                }
+            }
+
+        };
+        car.setReviewList(reviewsForCar);
+        carRepository.save(car);
+    }
+    public void calculateAverageRatings(String carId) throws CarNotFoundException {
+        Car car = getCarById(carId);
+        Double rating = 0.0;
+        Double valueForMoneyAverage = 0.0;
+        Double performanceAverage = 0.0;
+        Double visualAspectAverage = 0.0;
+        Integer numberOfRatings = 0;
+        List<Review> reviewsForCar = car.getReviewList();
+        for(Review review : reviewsForCar) {
+            performanceAverage += review.getPerformance();
+            valueForMoneyAverage += review.getValueForMoney();
+            visualAspectAverage += review.getVisualAspect();
+            rating += review.getOverallRating();
+            numberOfRatings++;
+        };
+
+        performanceAverage /= numberOfRatings;
+        valueForMoneyAverage /= numberOfRatings;
+        visualAspectAverage /= numberOfRatings;
+        rating /= numberOfRatings;
+
+        car.setPerformanceAverage(performanceAverage);
+        car.setValueForMoneyAverage(valueForMoneyAverage);
+        car.setVisualAspectAverage(visualAspectAverage);
+        car.setRating(rating);
+        car.setNumberOfRatings(numberOfRatings);
+
+        carRepository.save(car);
     }
 }
 

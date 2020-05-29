@@ -29,6 +29,12 @@ public @Data class Car {
     @Builder.Default
     private Double rating = 0.0;
     @Builder.Default
+    private Double valueForMoneyAverage = 0.0;
+    @Builder.Default
+    private Double performanceAverage = 0.0;
+    @Builder.Default
+    private Double visualAspectAverage = 0.0;
+    @Builder.Default
     private Integer numberOfRatings = 0;
 
 }

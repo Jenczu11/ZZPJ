@@ -16,7 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ReviewController {
     private final ReviewService reviewService;
-    private final CarService carService;
     @PostMapping("/review")
     public Review addReview(@RequestBody ReviewDto reviewDto) throws CarNotFoundException {
 //        Double overallRating = ((reviewDto.getValueForMoney()+reviewDto.getPerformance()+reviewDto.getVisualAspect()) / 3.0);
@@ -31,7 +30,6 @@ public class ReviewController {
                 .build();
 
         reviewService.addReview(review);
-        carService.updateRating(reviewDto.getCarId(),review);
         return review;
     }
 

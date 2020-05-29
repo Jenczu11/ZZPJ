@@ -16,14 +16,15 @@ import pl.lodz.p.it.mercedes.model.Review;
 import pl.lodz.p.it.mercedes.repositories.ReviewRepository;
 import pl.lodz.p.it.mercedes.services.ReviewService;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.mock;
@@ -33,7 +34,7 @@ import static org.mockito.Mockito.when;
 @Import(TestMongoConfiguration.class)
 @ExtendWith(TestSuiteExtension.class)
 
-public class ReviewServiceTests {
+public class ReviewServiceTest {
     @Autowired
     private ReviewRepository repository;
     private ReviewService reviewService;
@@ -42,9 +43,9 @@ public class ReviewServiceTests {
     void prepare() {
         List<Review> reviews = new ArrayList<>();
 
-        reviews.add(Review.builder().id("1").carId("car1").performance(1).userId("Micheal").visualAspect(2).valueForMoney(1).build());
-        reviews.add(Review.builder().carId("car2").performance(2).userId("Stephen").visualAspect(4).valueForMoney(3).build());
-        reviews.add(Review.builder().carId("car3").performance(3).userId("Lucas").visualAspect(5).valueForMoney(5).build());
+        reviews.add(Review.builder().id("1").carId("car1").performance(1).userId("Micheal").visualAspect(2).valueForMoney(1).reviewCreation(LocalDateTime.parse("2020-04-20T10:50:00.000")).build());
+        reviews.add(Review.builder().carId("car2").performance(2).userId("Stephen").visualAspect(4).valueForMoney(3).reviewCreation(LocalDateTime.parse("2020-04-25T10:50:00.000")).build());
+        reviews.add(Review.builder().carId("car3").performance(3).userId("Lucas").visualAspect(5).valueForMoney(5).reviewCreation(LocalDateTime.parse("2020-04-30T10:50:00.000")).build());
 
         repository.insert(reviews);
         reviewService = new ReviewService(repository);
@@ -80,9 +81,9 @@ public class ReviewServiceTests {
     }
 
     @Test
-    @DisplayName("Add one review.")
+    @DisplayName("Add one review for diffrent car.")
     public void addReview() {
-        Review review = Review.builder().carId("car4").performance(2).userId("Alvaro").visualAspect(3).valueForMoney(5).build();
+        Review review = Review.builder().carId("car4").performance(2).userId("Alvaro").visualAspect(3).valueForMoney(5).reviewCreation(LocalDateTime.parse("2020-04-30T10:50:00.000")).build();
 
         reviewService.addReview(review);
 
@@ -131,4 +132,31 @@ public class ReviewServiceTests {
 
         assertThat(returnedReviewsList.size()).isEqualTo(2);
     }
+
+    @Test
+    @DisplayName("One review for car every 24 hours")
+    public void checkReviewForDate() {
+
+        Review review1 = Review.builder().carId("carid1").userId("userid1").reviewCreation(LocalDateTime.parse("2020-05-29T10:50:00.000")).build();
+        Review review2 = Review.builder().carId("carid1").userId("userid1").reviewCreation(LocalDateTime.parse("2020-05-29T10:50:01.000")).build();
+
+        reviewService.addReview(review1);
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            reviewService.checkReviewForDate(review2);
+        });
+        String expectedMessage = "You can add review for this car once every 24h";
+        String actualMessage = exception.getMessage();
+
+//        var date1 = review1.getReviewCreation();
+//        var date2 = review2.getReviewCreation();
+//        System.out.println(date2.minusDays(1));
+//        System.out.println(date1);
+//        System.out.println(date2.minusDays(1).isAfter(date1));
+        System.out.println("Exception message: " + actualMessage);
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+
+
 }

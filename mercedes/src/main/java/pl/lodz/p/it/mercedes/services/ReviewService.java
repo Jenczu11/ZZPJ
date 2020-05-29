@@ -2,20 +2,78 @@ package pl.lodz.p.it.mercedes.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.lodz.p.it.mercedes.model.Car;
+import pl.lodz.p.it.mercedes.exceptions.CarNotFoundException;
+import pl.lodz.p.it.mercedes.exceptions.ReviewForCarNotFoundException;
 import pl.lodz.p.it.mercedes.model.Review;
 import pl.lodz.p.it.mercedes.repositories.ReviewRepository;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @AllArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     public void addReview(Review review) {
-        reviewRepository.insert(review);
+        if(checkReviewForDate(review)) {
+            if(checkIfReviewForCarExists(review)) {
+                reviewRepository.insert(review);
+//                carService.addReviewToCar(review.getCarId(),review);
+//                carService.calculateAverageRatings(review.getCarId());
+            } else {
+//                Update record
+                reviewRepository.insert(review);
+//                carService.updateReviewInCar(review.getCarId(),review);
+//                carService.calculateAverageRatings(review.getCarId());
+            }
+        }
     }
+
+    public boolean checkReviewForDate(Review reviewToCheck) {
+//        Get all reviews for car
+        List<Review> carReviews = this.getReviewByCarId(reviewToCheck.getCarId());
+        AtomicBoolean isCorrect = new AtomicBoolean(false);
+//        If zero reviews for car return true, review can be added.
+        if (carReviews.size() == 0) isCorrect.set(true);
+        carReviews.forEach(review -> {
+            if (review.getUserId().equals(reviewToCheck.getUserId())) {
+                var oldReviewDate = review.getReviewCreation();
+                var newReviewDate = reviewToCheck.getReviewCreation();
+                if (newReviewDate.minusDays(1).isAfter(oldReviewDate)) {
+//                    You can add review it is past 24h
+                    isCorrect.set(true);
+                } else {
+//                    You can't add review.
+                    isCorrect.set(false);
+                    throw new RuntimeException("You can add review for this car once every 24h");
+                }
+            }
+        });
+        return isCorrect.get();
+    }
+    public boolean checkIfReviewForCarExists(Review reviewToCheck) {
+//        Get all reviews for car
+        List<Review> carReviews = this.getReviewByCarId(reviewToCheck.getCarId());
+        AtomicBoolean addRecord = new AtomicBoolean(false);
+//        If zero reviews for car return true, review can be added.
+        if (carReviews.size() == 0) addRecord.set(true);
+        carReviews.forEach(review -> {
+            if (review.getUserId().equals(reviewToCheck.getUserId())) {
+                var oldReviewCarId = review.getCarId();
+                var newReviewCarId = reviewToCheck.getCarId();
+                if (oldReviewCarId.equals(newReviewCarId)) {
+//                    If exists update record
+                    addRecord.set(false);
+                } else {
+//                    If not exists simply add record
+                    addRecord.set(true);
+
+                }
+            }
+        });
+        return addRecord.get();
+    }
+
     public Review getReviewById(String id) throws Exception {
         if (reviewRepository.findById(id).isPresent()) {
             return reviewRepository.findById(id).get();
@@ -23,13 +81,15 @@ public class ReviewService {
             throw new Exception("Review not found.");
         }
     }
-    public List<Review> getReviewByCarId(String carId) throws Exception {
+
+    public List<Review> getReviewByCarId(String carId) throws ReviewForCarNotFoundException {
         if (reviewRepository.findByCarId(carId).isPresent()) {
             return reviewRepository.findByCarId(carId).get();
         } else {
-            throw new Exception("No review for car found");
+            throw new ReviewForCarNotFoundException("No review for car found");
         }
     }
+
     public List<Review> getReviewByUserId(String userId) throws Exception {
         if (reviewRepository.findAllByUserId(userId).isPresent()) {
             return reviewRepository.findAllByUserId(userId).get();
@@ -37,14 +97,16 @@ public class ReviewService {
             throw new Exception("No Review for user found");
         }
     }
+
     public List<Review> getAllReviews() {
         return reviewRepository.findAll();
     }
+
     public Review deleteReviewById(String id) throws Exception {
         if (reviewRepository.findById(id).isPresent()) {
-             Review reviewToDelete = reviewRepository.findById(id).get();
-             reviewRepository.delete(reviewToDelete);
-             return reviewToDelete;
+            Review reviewToDelete = reviewRepository.findById(id).get();
+            reviewRepository.delete(reviewToDelete);
+            return reviewToDelete;
         } else {
             throw new Exception("Review to delete not found.");
         }
