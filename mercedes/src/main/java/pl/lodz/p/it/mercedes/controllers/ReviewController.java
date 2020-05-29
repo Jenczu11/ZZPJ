@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.mercedes.dto.ReviewDto;
 import pl.lodz.p.it.mercedes.exceptions.CarNotFoundException;
-import pl.lodz.p.it.mercedes.model.Car;
 import pl.lodz.p.it.mercedes.model.Review;
 import pl.lodz.p.it.mercedes.services.CarService;
 import pl.lodz.p.it.mercedes.services.ReviewService;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -30,7 +28,7 @@ public class ReviewController {
                 .reviewCreation(reviewDto.getReviewCreation())
                 .build();
         if(reviewService.checkReviewForDate(review)){
-            if(reviewService.checkIfReviewForCarExists(review)) {
+            if(reviewService.checkIfReviewForCarNotExists(review)) {
                 reviewService.addReview(review);
                 carService.addReviewToCar(review.getCarId(),review);
                 carService.calculateAverageRatings(review.getCarId());

@@ -40,7 +40,7 @@ public class ReviewService {
         });
         return isCorrect.get();
     }
-    public boolean checkIfReviewForCarExists(Review reviewToCheck) {
+    public boolean checkIfReviewForCarNotExists(Review reviewToCheck) {
 //        Get all reviews for car
         List<Review> carReviews = this.getReviewByCarId(reviewToCheck.getCarId());
         AtomicBoolean addRecord = new AtomicBoolean(true);

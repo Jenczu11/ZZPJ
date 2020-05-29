@@ -133,29 +133,7 @@ public class ReviewServiceTest {
         assertThat(returnedReviewsList.size()).isEqualTo(2);
     }
 
-    @Test
-    @DisplayName("One review for car every 24 hours")
-    public void checkReviewForDate() {
 
-        Review review1 = Review.builder().carId("carid1").userId("userid1").reviewCreation(LocalDateTime.parse("2020-05-29T10:50:00.000")).build();
-        Review review2 = Review.builder().carId("carid1").userId("userid1").reviewCreation(LocalDateTime.parse("2020-05-29T10:50:01.000")).build();
-
-        reviewService.addReview(review1);
-
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            reviewService.checkReviewForDate(review2);
-        });
-        String expectedMessage = "You can add review for this car once every 24h";
-        String actualMessage = exception.getMessage();
-
-//        var date1 = review1.getReviewCreation();
-//        var date2 = review2.getReviewCreation();
-//        System.out.println(date2.minusDays(1));
-//        System.out.println(date1);
-//        System.out.println(date2.minusDays(1).isAfter(date1));
-        System.out.println("Exception message: " + actualMessage);
-        assertTrue(actualMessage.contains(expectedMessage));
-    }
 
 
 
