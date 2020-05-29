@@ -21,7 +21,7 @@ public class ReviewService {
     public boolean checkReviewForDate(Review reviewToCheck) {
 //        Get all reviews for car
         List<Review> carReviews = this.getReviewByCarId(reviewToCheck.getCarId());
-        AtomicBoolean isCorrect = new AtomicBoolean(false);
+        AtomicBoolean isCorrect = new AtomicBoolean(true);
 //        If zero reviews for car return true, review can be added.
         if (carReviews.size() == 0) isCorrect.set(true);
         carReviews.forEach(review -> {
@@ -43,7 +43,7 @@ public class ReviewService {
     public boolean checkIfReviewForCarExists(Review reviewToCheck) {
 //        Get all reviews for car
         List<Review> carReviews = this.getReviewByCarId(reviewToCheck.getCarId());
-        AtomicBoolean addRecord = new AtomicBoolean(false);
+        AtomicBoolean addRecord = new AtomicBoolean(true);
 //        If zero reviews for car return true, review can be added.
         if (carReviews.size() == 0) addRecord.set(true);
         carReviews.forEach(review -> {
