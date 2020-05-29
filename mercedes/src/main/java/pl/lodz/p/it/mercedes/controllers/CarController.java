@@ -38,4 +38,22 @@ public class CarController {
     public List<Car> getAllCars() {
         return carService.getAllCars();
     }
+
+    @GetMapping("/cars/top10")
+    public List<Car> getTop10_OverallRating() {
+        return carService.getTop10_OverallRating();
+    }
+    @GetMapping("/cars/top10/visual")
+    public List<Car> getTop10_VisualAspect() {
+        return carService.getTop10_VisualAspect();
+    }
+    @GetMapping("/cars/top10/value")
+    public List<Car> getTop10_ValueForMoney() {
+        return carService.getTop10_ValueForMoney();
+    }
+    @GetMapping("/cars/top10/performance")
+    public List<Car> getTop10_Performance() {
+        return carService.getTop10_Performance();
+    }
+
 }

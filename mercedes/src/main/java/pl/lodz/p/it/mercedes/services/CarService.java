@@ -11,6 +11,8 @@ import pl.lodz.p.it.mercedes.model.Review;
 import pl.lodz.p.it.mercedes.repositories.CarRepository;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -104,6 +106,54 @@ public class CarService {
         car.setNumberOfRatings(numberOfRatings);
 
         carRepository.save(car);
+    }
+
+    public List<Car> getTop10_OverallRating() {
+        List<Car> cars = this.getAllCars();
+        List<Car> top10 = new ArrayList<>();
+        Collections.sort(cars,(o1, o2) -> {
+            if(o1.getRating() < o2.getRating()) return 1;
+            if(o1.getRating() > o2.getRating()) return -1;
+            return 0;
+        });
+        top10 = cars.subList(0,10);
+        return top10;
+    }
+
+    public List<Car> getTop10_VisualAspect() {
+        List<Car> cars = this.getAllCars();
+        List<Car> top10 = new ArrayList<>();
+        Collections.sort(cars,(o1, o2) -> {
+            if(o1.getVisualAspectAverage() < o2.getVisualAspectAverage()) return 1;
+            if(o1.getVisualAspectAverage() > o2.getVisualAspectAverage()) return -1;
+            return 0;
+        });
+        top10 = cars.subList(0,10);
+        return top10;
+    }
+
+    public List<Car> getTop10_ValueForMoney() {
+        List<Car> cars = this.getAllCars();
+        List<Car> top10 = new ArrayList<>();
+        Collections.sort(cars,(o1, o2) -> {
+            if(o1.getValueForMoneyAverage() < o2.getValueForMoneyAverage()) return 1;
+            if(o1.getValueForMoneyAverage() > o2.getValueForMoneyAverage()) return -1;
+            return 0;
+        });
+        top10 = cars.subList(0,10);
+        return top10;
+    }
+
+    public List<Car> getTop10_Performance() {
+        List<Car> cars = this.getAllCars();
+        List<Car> top10 = new ArrayList<>();
+        Collections.sort(cars,(o1, o2) -> {
+            if(o1.getPerformanceAverage() < o2.getPerformanceAverage()) return 1;
+            if(o1.getPerformanceAverage() > o2.getPerformanceAverage()) return -1;
+            return 0;
+        });
+        top10 = cars.subList(0,10);
+        return top10;
     }
 }
 
