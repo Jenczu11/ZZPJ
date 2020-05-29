@@ -15,18 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     public void addReview(Review review) {
-        if(checkReviewForDate(review)) {
-            if(checkIfReviewForCarExists(review)) {
-                reviewRepository.insert(review);
-//                carService.addReviewToCar(review.getCarId(),review);
-//                carService.calculateAverageRatings(review.getCarId());
-            } else {
-//                Update record
-                reviewRepository.insert(review);
-//                carService.updateReviewInCar(review.getCarId(),review);
-//                carService.calculateAverageRatings(review.getCarId());
-            }
-        }
+        reviewRepository.insert(review);
     }
 
     public boolean checkReviewForDate(Review reviewToCheck) {
