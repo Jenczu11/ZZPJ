@@ -32,6 +32,6 @@ public class AccountService {
     }
 
     public List<Account> getAllAccount() throws AccountNotFoundException {
-         return accountRepository.findAll();
+        return accountRepository.findAll();
     }
 }

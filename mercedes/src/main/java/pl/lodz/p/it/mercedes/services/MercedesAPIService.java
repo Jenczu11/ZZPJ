@@ -35,7 +35,7 @@ import java.util.Objects;
 @Service
 @AllArgsConstructor
 public class MercedesAPIService {
-    
+
     private final CarRepository carRepository;
     private final RestTemplate restTemplate = new RestTemplate();
 

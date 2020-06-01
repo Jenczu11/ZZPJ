@@ -13,7 +13,8 @@ import java.util.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public @Data class Car {
+public @Data
+class Car {
     @Id
     @Builder.Default
     private String id = UUID.randomUUID().toString();
@@ -23,7 +24,7 @@ public @Data class Car {
     private String bodyName;
     private Double price;
     private CarTechnicalInformation carTechnicalInformation;
-    private Map<String,String> imagesUrls;
+    private Map<String, String> imagesUrls;
     @Builder.Default
     private ArrayList<Review> reviewList = new ArrayList<>();
     @Builder.Default

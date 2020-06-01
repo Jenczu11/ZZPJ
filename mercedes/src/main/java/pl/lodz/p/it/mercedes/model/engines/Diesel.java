@@ -19,7 +19,4 @@ public class Diesel extends Engine {
     private FuelConsumptionUnit fuelConsumptionUnit = FuelConsumptionUnit.l_100km;
     @Builder.Default
     private String fuelType = "DIESEL";
-
-
-
 }

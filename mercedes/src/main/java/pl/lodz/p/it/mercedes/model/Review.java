@@ -17,7 +17,7 @@ import java.util.UUID;
 public class Review {
 
     @Builder.Default
-    private String id = UUID.randomUUID().toString();;
+    private String id = UUID.randomUUID().toString();
     private String carId;
     private String userId;
     @Builder.Default
@@ -37,7 +37,7 @@ public class Review {
         this.performance = performance;
         this.visualAspect = visualAspect;
         this.reviewCreation = reviewCreation;
-        this.overallRating = (valueForMoney+performance+visualAspect) / 3.0;
+        this.overallRating = (valueForMoney + performance + visualAspect) / 3.0;
     }
 
 }

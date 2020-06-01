@@ -4,7 +4,8 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-public @Data class AuthenticationResponse implements Serializable {
+public @Data
+class AuthenticationResponse implements Serializable {
 
     private final String jwt;
 }

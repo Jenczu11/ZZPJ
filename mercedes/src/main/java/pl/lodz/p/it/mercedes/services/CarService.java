@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CarService {
     private final CarRepository carRepository;
+
     public void addCar(Car car) {
         carRepository.insert(car);
     }
@@ -58,22 +59,25 @@ public class CarService {
         car.getReviewList().add(review);
         carRepository.save(car);
     }
+
     public void updateReviewInCar(String carId, Review reviewToUpdate) throws CarNotFoundException {
         Car car = getCarById(carId);
 //        TODO: Logika updatujaca review a nie insertujaca.
         ArrayList<Review> reviewsForCar = car.getReviewList();
-        for(Review review : reviewsForCar) {
-            if(review.getCarId().equals(reviewToUpdate.getCarId())){
-                if(review.getUserId().equals(reviewToUpdate.getUserId())) {
+        for (Review review : reviewsForCar) {
+            if (review.getCarId().equals(reviewToUpdate.getCarId())) {
+                if (review.getUserId().equals(reviewToUpdate.getUserId())) {
                     reviewsForCar.remove(review);
                     reviewsForCar.add(reviewToUpdate);
                 }
             }
 
-        };
+        }
+        ;
         car.setReviewList(reviewsForCar);
         carRepository.save(car);
     }
+
     public Car calculateAverageRatings(String carId) throws CarNotFoundException {
 
         Car car = getCarById(carId);
@@ -122,48 +126,48 @@ public class CarService {
     public List<Car> getTop10_OverallRating() {
         List<Car> cars = this.getAllCars();
         List<Car> top10 = new ArrayList<>();
-        Collections.sort(cars,(o1, o2) -> {
-            if(o1.getRating() < o2.getRating()) return 1;
-            if(o1.getRating() > o2.getRating()) return -1;
+        Collections.sort(cars, (o1, o2) -> {
+            if (o1.getRating() < o2.getRating()) return 1;
+            if (o1.getRating() > o2.getRating()) return -1;
             return 0;
         });
-        top10 = cars.subList(0,10);
+        top10 = cars.subList(0, 10);
         return top10;
     }
 
     public List<Car> getTop10_VisualAspect() {
         List<Car> cars = this.getAllCars();
         List<Car> top10 = new ArrayList<>();
-        Collections.sort(cars,(o1, o2) -> {
-            if(o1.getVisualAspectAverage() < o2.getVisualAspectAverage()) return 1;
-            if(o1.getVisualAspectAverage() > o2.getVisualAspectAverage()) return -1;
+        Collections.sort(cars, (o1, o2) -> {
+            if (o1.getVisualAspectAverage() < o2.getVisualAspectAverage()) return 1;
+            if (o1.getVisualAspectAverage() > o2.getVisualAspectAverage()) return -1;
             return 0;
         });
-        top10 = cars.subList(0,10);
+        top10 = cars.subList(0, 10);
         return top10;
     }
 
     public List<Car> getTop10_ValueForMoney() {
         List<Car> cars = this.getAllCars();
         List<Car> top10 = new ArrayList<>();
-        Collections.sort(cars,(o1, o2) -> {
-            if(o1.getValueForMoneyAverage() < o2.getValueForMoneyAverage()) return 1;
-            if(o1.getValueForMoneyAverage() > o2.getValueForMoneyAverage()) return -1;
+        Collections.sort(cars, (o1, o2) -> {
+            if (o1.getValueForMoneyAverage() < o2.getValueForMoneyAverage()) return 1;
+            if (o1.getValueForMoneyAverage() > o2.getValueForMoneyAverage()) return -1;
             return 0;
         });
-        top10 = cars.subList(0,10);
+        top10 = cars.subList(0, 10);
         return top10;
     }
 
     public List<Car> getTop10_Performance() {
         List<Car> cars = this.getAllCars();
         List<Car> top10 = new ArrayList<>();
-        Collections.sort(cars,(o1, o2) -> {
-            if(o1.getPerformanceAverage() < o2.getPerformanceAverage()) return 1;
-            if(o1.getPerformanceAverage() > o2.getPerformanceAverage()) return -1;
+        Collections.sort(cars, (o1, o2) -> {
+            if (o1.getPerformanceAverage() < o2.getPerformanceAverage()) return 1;
+            if (o1.getPerformanceAverage() > o2.getPerformanceAverage()) return -1;
             return 0;
         });
-        top10 = cars.subList(0,10);
+        top10 = cars.subList(0, 10);
         return top10;
     }
 }

@@ -13,5 +13,4 @@ public class Electric extends Engine {
     private FuelConsumptionUnit fuelConsumptionUnit = FuelConsumptionUnit.kWh_100km;
     @Builder.Default
     private String fuelType = "ELECTRIC";
-
 }

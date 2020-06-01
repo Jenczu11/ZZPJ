@@ -37,6 +37,5 @@ class EngineFactoryTest {
 
         System.out.println(engine.getClass() + ":" + className);
         assertEquals(engine.getClass().toString(), className);
-
     }
 }

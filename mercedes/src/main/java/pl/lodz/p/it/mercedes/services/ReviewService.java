@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @AllArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
+
     public void addReview(Review review) {
         reviewRepository.insert(review);
     }
@@ -40,6 +41,7 @@ public class ReviewService {
         });
         return isCorrect.get();
     }
+
     public boolean checkIfReviewForCarNotExists(Review reviewToCheck) {
 //        Get all reviews for car
         List<Review> carReviews = this.getReviewByCarId(reviewToCheck.getCarId());

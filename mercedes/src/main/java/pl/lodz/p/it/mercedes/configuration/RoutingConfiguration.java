@@ -1,4 +1,4 @@
-package pl.lodz.p.it.zzpj.dogs.configuration;
+package pl.lodz.p.it.mercedes.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -14,11 +14,6 @@ import java.io.IOException;
 
 @Configuration
 public class RoutingConfiguration implements WebMvcConfigurer {
-
-//    @Override
-//    public void configurePathMatch(PathMatchConfigurer configurer) {
-//        configurer.addPathPrefix("api", HandlerTypePredicate.forAnnotation(RestController.class));
-//    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

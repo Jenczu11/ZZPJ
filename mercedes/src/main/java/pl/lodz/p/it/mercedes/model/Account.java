@@ -15,7 +15,8 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public @Data class Account {
+public @Data
+class Account {
 
     @Id
     @Builder.Default

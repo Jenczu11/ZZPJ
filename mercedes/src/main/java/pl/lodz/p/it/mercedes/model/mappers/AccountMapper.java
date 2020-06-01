@@ -6,9 +6,9 @@ import pl.lodz.p.it.mercedes.model.Account;
 public class AccountMapper {
     public static AccountDto mapToDto(Account account) {
         return AccountDto.builder()
-                        .username(account.getUsername())
-                        .firstName(account.getFirstName())
-                        .lastName(account.getLastName())
+                .username(account.getUsername())
+                .firstName(account.getFirstName())
+                .lastName(account.getLastName())
                 .build();
     }
 

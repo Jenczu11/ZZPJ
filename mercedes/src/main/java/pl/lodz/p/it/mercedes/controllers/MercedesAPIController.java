@@ -13,18 +13,19 @@ public class MercedesAPIController {
 
 
     private final MercedesAPIService mercedesAPIService;
+
     @GetMapping("/mercedes/{id}")
-    public Car getModel(@PathVariable int id,@RequestParam(defaultValue = "null") String apikey) {
-       return mercedesAPIService.getCar(id,apikey);
+    public Car getModel(@PathVariable int id, @RequestParam(defaultValue = "null") String apikey) {
+        return mercedesAPIService.getCar(id, apikey);
     }
 
     @PostMapping("/mercedes/{id}/save")
-    public Car saveCarinDB(@PathVariable int id,@RequestParam(defaultValue = "null") String apikey) {
-        return mercedesAPIService.saveCar(id,apikey);
+    public Car saveCarinDB(@PathVariable int id, @RequestParam(defaultValue = "null") String apikey) {
+        return mercedesAPIService.saveCar(id, apikey);
     }
 
     @PostMapping("mercedes/populateDB")
     public String populateDB(@RequestParam int start, @RequestParam int end, @RequestParam(defaultValue = "null") String apikey) {
-        return mercedesAPIService.populateDB(start,end,apikey);
+        return mercedesAPIService.populateDB(start, end, apikey);
     }
 }
