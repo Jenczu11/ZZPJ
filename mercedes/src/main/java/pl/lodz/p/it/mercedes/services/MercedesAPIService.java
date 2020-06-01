@@ -83,7 +83,6 @@ public class MercedesAPIService {
 
         Map<String, String> imagesUrls = new HashMap<String, String>();
         String linkToImages = imagesLinks.replaceAll("(apikey.*)", "");
-//        String linkToImages = imagesLinks;
         imagesUrls.put("base", linkToImages);
 
         try {

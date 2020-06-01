@@ -19,5 +19,4 @@ public class SuperPlus extends Engine {
     private FuelConsumptionUnit fuelConsumptionUnit = FuelConsumptionUnit.l_100km;
     @Builder.Default
     private String fuelType = "SUPERPLUS";
-
 }

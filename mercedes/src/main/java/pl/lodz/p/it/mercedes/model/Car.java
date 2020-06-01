@@ -37,5 +37,4 @@ class Car {
     private Double visualAspectAverage = 0.0;
     @Builder.Default
     private Integer numberOfRatings = 0;
-
 }

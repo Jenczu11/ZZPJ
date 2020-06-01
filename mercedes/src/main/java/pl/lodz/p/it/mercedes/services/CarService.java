@@ -62,7 +62,7 @@ public class CarService {
 
     public void updateReviewInCar(String carId, Review reviewToUpdate) throws CarNotFoundException {
         Car car = getCarById(carId);
-//        TODO: Logika updatujaca review a nie insertujaca.
+
         ArrayList<Review> reviewsForCar = car.getReviewList();
         for (Review review : reviewsForCar) {
             if (review.getCarId().equals(reviewToUpdate.getCarId())) {
@@ -73,7 +73,7 @@ public class CarService {
             }
 
         }
-        ;
+
         car.setReviewList(reviewsForCar);
         carRepository.save(car);
     }

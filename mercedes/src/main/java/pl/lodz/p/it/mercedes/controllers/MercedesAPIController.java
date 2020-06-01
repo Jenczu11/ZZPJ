@@ -11,7 +11,6 @@ import pl.lodz.p.it.mercedes.services.MercedesAPIService;
 @AllArgsConstructor
 public class MercedesAPIController {
 
-
     private final MercedesAPIService mercedesAPIService;
 
     @GetMapping("/mercedes/{id}")

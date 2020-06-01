@@ -23,5 +23,4 @@ class CarDto {
     private ArrayList<Review> reviewList;
     private Double rating;
     private Integer numberOfRatings;
-
 }
