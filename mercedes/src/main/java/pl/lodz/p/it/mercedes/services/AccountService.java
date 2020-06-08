@@ -9,6 +9,7 @@ import pl.lodz.p.it.mercedes.repositories.AccountRepository;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @Service
 @AllArgsConstructor
 public class AccountService {
@@ -31,7 +32,7 @@ public class AccountService {
         }
     }
 
-    public List<Account> getAllAccount() throws AccountNotFoundException {
+    public List<Account> getAllAccount() {
         return accountRepository.findAll();
     }
 }

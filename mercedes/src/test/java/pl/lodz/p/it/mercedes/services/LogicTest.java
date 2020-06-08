@@ -45,7 +45,7 @@ class LogicTest {
     @BeforeEach
     void setUp() {
         List<Car> cars = new ArrayList<>();
-        ArrayList<String> enginesFuelTypes = new ArrayList<String>(
+        ArrayList<String> enginesFuelTypes = new ArrayList<>(
                 Arrays.asList("Diesel", "Super", "SuperPlus", "Electric")
         );
         IntStream.range(0, enginesFuelTypes.size()).forEach(i -> {
@@ -77,8 +77,6 @@ class LogicTest {
         carService = new CarService(carRepository);
 
         reviewService = new ReviewService(reviewRepository);
-        Review review1 = Review.builder().carId("1").userId("userid1").reviewCreation(LocalDateTime.parse("2020-05-30T10:50:00.000")).build();
-        Review review2 = Review.builder().carId("1").userId("userid1").reviewCreation(LocalDateTime.parse("2020-05-30T10:50:01.000")).build();
 
     }
 
@@ -98,9 +96,7 @@ class LogicTest {
         reviewService.addReview(review1);
         assertEquals(reviewService.getReviewByCarId("carid1").size(), 1);
 //        Tested method.
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            reviewService.checkReviewForDate(review2);
-        });
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> reviewService.checkReviewForDate(review2));
         String expectedMessage = "You can add review for this car once every 24h";
         String actualMessage = exception.getMessage();
 

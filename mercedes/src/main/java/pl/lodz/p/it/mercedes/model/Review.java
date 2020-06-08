@@ -1,12 +1,10 @@
 package pl.lodz.p.it.mercedes.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -28,7 +26,7 @@ public class Review {
     private Integer visualAspect = 0;
     private Double overallRating;
     private LocalDateTime reviewCreation;
-
+    @SuppressWarnings("unused")
     public Review(String id, String carId, String userId, Integer valueForMoney, Integer performance, Integer visualAspect, Double overallRating, LocalDateTime reviewCreation) {
         this.id = id;
         this.carId = carId;

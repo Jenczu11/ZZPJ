@@ -1,29 +1,21 @@
 package pl.lodz.p.it.mercedes.services;
 
-import com.jayway.jsonpath.internal.function.numeric.Average;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import pl.lodz.p.it.mercedes.TestMongoConfiguration;
 import pl.lodz.p.it.mercedes.TestSuiteExtension;
-import pl.lodz.p.it.mercedes.exceptions.CarNotFoundException;
 import pl.lodz.p.it.mercedes.model.*;
-import pl.lodz.p.it.mercedes.model.engines.EngineFactory;
 import pl.lodz.p.it.mercedes.repositories.CarRepository;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -90,9 +82,7 @@ class Top10Test {
 
     private void printCarList(List<Car> cars) {
         System.out.println("\n------------------------------");
-        cars.forEach(car -> {
-            System.out.println(car.toString());
-        });
+        cars.forEach(car -> System.out.println(car.toString()));
         System.out.println("------------------------------");
     }
 

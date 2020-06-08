@@ -2,7 +2,6 @@ package pl.lodz.p.it.mercedes.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.lodz.p.it.mercedes.exceptions.CarNotFoundException;
 import pl.lodz.p.it.mercedes.exceptions.ReviewForCarNotFoundException;
 import pl.lodz.p.it.mercedes.model.Review;
 import pl.lodz.p.it.mercedes.repositories.ReviewRepository;
@@ -52,14 +51,9 @@ public class ReviewService {
             if (review.getUserId().equals(reviewToCheck.getUserId())) {
                 var oldReviewCarId = review.getCarId();
                 var newReviewCarId = reviewToCheck.getCarId();
-                if (oldReviewCarId.equals(newReviewCarId)) {
-//                    If exists update record
-                    addRecord.set(false);
-                } else {
-//                    If not exists simply add record
-                    addRecord.set(true);
-
-                }
+                //                    If exists update record
+                //                    If not exists simply add record
+                addRecord.set(!oldReviewCarId.equals(newReviewCarId));
             }
         });
         return addRecord.get();

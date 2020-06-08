@@ -1,11 +1,9 @@
 package pl.lodz.p.it.mercedes.controllers;
 
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.*;
 
-import pl.lodz.p.it.mercedes.dto.CarDto;
 import pl.lodz.p.it.mercedes.exceptions.CarNotFoundException;
 import pl.lodz.p.it.mercedes.model.Car;
 import pl.lodz.p.it.mercedes.services.CarService;

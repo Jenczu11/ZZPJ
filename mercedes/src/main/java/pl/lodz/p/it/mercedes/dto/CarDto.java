@@ -7,11 +7,10 @@ import pl.lodz.p.it.mercedes.model.Review;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.UUID;
 
+@SuppressWarnings("unused")
 @Builder
-public @Data
-class CarDto {
+public @Data class CarDto {
 
     private String modelId;
     private String name;

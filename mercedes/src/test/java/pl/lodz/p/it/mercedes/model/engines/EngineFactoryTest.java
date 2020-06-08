@@ -1,9 +1,6 @@
 package pl.lodz.p.it.mercedes.model.engines;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import pl.lodz.p.it.mercedes.model.Engine;
@@ -11,14 +8,6 @@ import pl.lodz.p.it.mercedes.model.Engine;
 import static org.junit.jupiter.api.Assertions.*;
 
 class EngineFactoryTest {
-
-    @BeforeEach
-    void setUp() {
-    }
-
-    @AfterEach
-    void tearDown() {
-    }
 
     @DisplayName("Is engine factory returning good class")
     @ParameterizedTest(name = "{0} fueltype should return engine {9}")

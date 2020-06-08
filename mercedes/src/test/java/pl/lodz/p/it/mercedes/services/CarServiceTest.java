@@ -17,13 +17,11 @@ import pl.lodz.p.it.mercedes.model.*;
 import pl.lodz.p.it.mercedes.model.engines.EngineFactory;
 import pl.lodz.p.it.mercedes.repositories.CarRepository;
 
-import javax.lang.model.type.ArrayType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,7 +54,7 @@ class CarServiceTest {
     @BeforeEach
     void setUp() {
         List<Car> cars = new ArrayList<>();
-        ArrayList<String> enginesFuelTypes = new ArrayList<String>(
+        ArrayList<String> enginesFuelTypes = new ArrayList<>(
                 Arrays.asList("Diesel", "Super", "SuperPlus", "Electric")
         );
         IntStream.range(0, enginesFuelTypes.size()).forEach(i -> {
@@ -124,10 +122,8 @@ class CarServiceTest {
     @DisplayName("Throw carNotFound on wrong car name")
     @ParameterizedTest(name = "carName = {0}")
     @ValueSource(strings = {"you won't find this car"})
-    void givenNonExistCar_throwCarNotFoundException(String carName) throws CarNotFoundException {
-        Exception exception = assertThrows(CarNotFoundException.class, () -> {
-            carService.getCarWithName(carName);
-        });
+    void givenNonExistCar_throwCarNotFoundException(String carName) {
+        Exception exception = assertThrows(CarNotFoundException.class, () -> carService.getCarWithName(carName));
 
         String expectedMessage = "Car not found";
         String actualMessage = exception.getMessage();
@@ -157,11 +153,6 @@ class CarServiceTest {
     void deleteCar(String id) throws CarNotFoundException {
         carService.deleteCar(id);
         assertEquals(carService.getAllCars().size(), 3);
-    }
-
-    @Test
-    @DisplayName("Update rating")
-    void updateRating() {
     }
 
     @Test

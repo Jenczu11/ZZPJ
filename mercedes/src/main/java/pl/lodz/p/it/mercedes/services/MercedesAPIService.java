@@ -2,15 +2,8 @@ package pl.lodz.p.it.mercedes.services;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -18,12 +11,10 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.web.server.ResponseStatusException;
 import pl.lodz.p.it.mercedes.model.Car;
 import pl.lodz.p.it.mercedes.model.CarTechnicalInformation;
 import pl.lodz.p.it.mercedes.model.Engine;
 import pl.lodz.p.it.mercedes.model.Transmission;
-import pl.lodz.p.it.mercedes.model.engines.Diesel;
 import pl.lodz.p.it.mercedes.model.engines.EngineFactory;
 import pl.lodz.p.it.mercedes.repositories.CarRepository;
 
@@ -81,7 +72,7 @@ public class MercedesAPIService {
         var imagesLinksWrapper = (JSONObject) carConfiguration.get("_links");
         var imagesLinks = imagesLinksWrapper.get("image").toString();
 
-        Map<String, String> imagesUrls = new HashMap<String, String>();
+        Map<String, String> imagesUrls = new HashMap<>();
         String linkToImages = imagesLinks.replaceAll("(apikey.*)", "");
         imagesUrls.put("base", linkToImages);
 

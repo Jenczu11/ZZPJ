@@ -4,6 +4,7 @@ import pl.lodz.p.it.mercedes.dto.AccountDto;
 import pl.lodz.p.it.mercedes.model.Account;
 
 public class AccountMapper {
+    @SuppressWarnings("unused")
     public static AccountDto mapToDto(Account account) {
         return AccountDto.builder()
                 .username(account.getUsername())

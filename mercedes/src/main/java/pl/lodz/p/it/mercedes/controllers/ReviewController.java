@@ -60,7 +60,7 @@ public class ReviewController {
 
     @GetMapping("/review/car/{carId}")
     @ResponseBody
-    public List<Review> getReviewByCarId(@PathVariable String carId) throws Exception {
+    public List<Review> getReviewByCarId(@PathVariable String carId) {
         return reviewService.getReviewByCarId(carId);
     }
 

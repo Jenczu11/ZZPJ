@@ -8,8 +8,8 @@ import pl.lodz.p.it.mercedes.model.Review;
 import pl.lodz.p.it.mercedes.repositories.CarRepository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -78,22 +78,21 @@ public class CarService {
         carRepository.save(car);
     }
 
-    public Car calculateAverageRatings(String carId) throws CarNotFoundException {
+    public void calculateAverageRatings(String carId) throws CarNotFoundException {
 
         Car car = getCarById(carId);
         calculateAverageRatingsHelper(car);
         carRepository.save(car);
-        return car;
     }
 
-    public Car calculateAverageRatings(Car car) throws CarNotFoundException {
+    public Car calculateAverageRatings(Car car) {
 
         calculateAverageRatingsHelper(car);
         carRepository.save(car);
         return car;
     }
 
-    private Car calculateAverageRatingsHelper(Car car) {
+    private void calculateAverageRatingsHelper(Car car) {
         Double rating = 0.0;
         Double valueForMoneyAverage = 0.0;
         Double performanceAverage = 0.0;
@@ -107,7 +106,6 @@ public class CarService {
             rating += review.getOverallRating();
             numberOfRatings++;
         }
-        ;
 
         performanceAverage /= numberOfRatings;
         valueForMoneyAverage /= numberOfRatings;
@@ -119,56 +117,28 @@ public class CarService {
         car.setVisualAspectAverage(visualAspectAverage);
         car.setRating(rating);
         car.setNumberOfRatings(numberOfRatings);
-        return car;
     }
 
 
     public List<Car> getTop10_OverallRating() {
         List<Car> cars = this.getAllCars();
-        List<Car> top10 = new ArrayList<>();
-        Collections.sort(cars, (o1, o2) -> {
-            if (o1.getRating() < o2.getRating()) return 1;
-            if (o1.getRating() > o2.getRating()) return -1;
-            return 0;
-        });
-        top10 = cars.subList(0, 10);
-        return top10;
+        return cars.stream().sorted((o1, o2) -> o2.getRating().compareTo(o1.getRating())).limit(10).collect(Collectors.toList());
     }
 
     public List<Car> getTop10_VisualAspect() {
         List<Car> cars = this.getAllCars();
-        List<Car> top10 = new ArrayList<>();
-        Collections.sort(cars, (o1, o2) -> {
-            if (o1.getVisualAspectAverage() < o2.getVisualAspectAverage()) return 1;
-            if (o1.getVisualAspectAverage() > o2.getVisualAspectAverage()) return -1;
-            return 0;
-        });
-        top10 = cars.subList(0, 10);
-        return top10;
+        return cars.stream().sorted((o1, o2) -> o2.getVisualAspectAverage().compareTo(o1.getVisualAspectAverage())).limit(10).collect(Collectors.toList());
     }
 
     public List<Car> getTop10_ValueForMoney() {
         List<Car> cars = this.getAllCars();
-        List<Car> top10 = new ArrayList<>();
-        Collections.sort(cars, (o1, o2) -> {
-            if (o1.getValueForMoneyAverage() < o2.getValueForMoneyAverage()) return 1;
-            if (o1.getValueForMoneyAverage() > o2.getValueForMoneyAverage()) return -1;
-            return 0;
-        });
-        top10 = cars.subList(0, 10);
-        return top10;
+        return cars.stream().sorted((o1, o2) -> o2.getValueForMoneyAverage().compareTo(o1.getValueForMoneyAverage())).limit(10).collect(Collectors.toList());
     }
 
     public List<Car> getTop10_Performance() {
         List<Car> cars = this.getAllCars();
-        List<Car> top10 = new ArrayList<>();
-        Collections.sort(cars, (o1, o2) -> {
-            if (o1.getPerformanceAverage() < o2.getPerformanceAverage()) return 1;
-            if (o1.getPerformanceAverage() > o2.getPerformanceAverage()) return -1;
-            return 0;
-        });
-        top10 = cars.subList(0, 10);
-        return top10;
+        return cars.stream().sorted((o1, o2) -> o2.getPerformanceAverage().compareTo(o1.getPerformanceAverage())).limit(10).collect(Collectors.toList());
+
     }
 }
 

@@ -1,6 +1,5 @@
 package pl.lodz.p.it.mercedes;
 
-import com.mongodb.client.MongoClient;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodStarter;
 import de.flapdoodle.embed.mongo.config.IMongodConfig;
